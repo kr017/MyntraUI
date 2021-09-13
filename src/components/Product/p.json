@@ -1,0 +1,127 @@
+{
+  "image": [
+"https://res.cloudinary.com/dq0qx65vj/image/upload/v1630209785/whistler/products/women/ardy-arjun--yJGixC0Dak-unsplash_p3wkqi.jpg",
+"https://res.cloudinary.com/dq0qx65vj/image/upload/v1630209781/whistler/products/women/ardy-arjun-DFTs4CspXWg-unsplash_xj61fl.jpg",
+
+
+    "https://res.cloudinary.com/dq0qx65vj/image/upload/v1630261391/whistler/products/kids/kelly-sikkema-SiOW0btU0zk-unsplash_koy6tj.jpg"
+  ],
+  "id": "8",
+  "price": {
+    "MRP": "1190",
+    "offerPrice": "900",
+    "offerLabel": "30%Off"
+  },
+  "description": "Simple Kurti",
+  "category": "ethnic",
+  "__v": 0,
+  "brand": "BeYou",
+  "name": "Saree",
+  "ratingsReviews": {
+    "ratings": [
+      {
+        "label": "2",
+        "value": {
+          "$numberLong": "2"
+        },
+        "totalCount": {
+          "$numberLong": "2100"
+        }
+      },
+      {
+        "label": "5",
+        "value": {
+          "$numberLong": "5"
+        },
+        "totalCount": {
+          "$numberLong": "1290"
+        }
+      }
+    ]
+  },
+  "tag": "trending",
+ 
+  "section": "women",
+  "color": "blue"
+}
+
+
+//
+const product = {
+  brand: "HRX",
+  name: "Men T-Shirt Stripped",
+  pictures: [
+    {
+      id: 1,
+      src: "https://res.cloudinary.com/dq0qx65vj/image/upload/v1630152271/whistler/products/men/shiv-narayan-das-ORbJDeKSMEU-unsplash_ob4fu5.jpg",
+    },
+    {
+      id: 2,
+      src: "https://res.cloudinary.com/dq0qx65vj/image/upload/v1630152367/whistler/products/men/cibelly-roberta-SE4Xc1WvIkU-unsplash_uwavtz.jpg",
+    },
+    {
+      id: 3,
+      src: "https://res.cloudinary.com/dq0qx65vj/image/upload/v1630152772/whistler/products/men/sebastian-cyrman-cjiE8eGMvro-unsplash_av9m95.jpg",
+    },
+  ],
+  sizes: [
+    { label: "S", isAvailable: true },
+    { label: "M", isAvailable: true },
+    { label: "L", isAvailable: false },
+    { label: "XL", isAvailable: true },
+  ],
+  category: "T-Shirt",
+  tag: "Trending",
+  price: {
+    MRP: "1200",
+    offerPrice: "799",
+    offerLabel: "40%OFF",
+  },
+  Details: "Best product at best price",
+  specification: {
+    pattern: "Printed",
+    neck: "round neck",
+  },
+  ratingsReviews: {
+    ratings: [
+      {
+        label: "5",
+        value: 5,
+        totalCount: 130,
+      },
+      {
+        label: "4",
+        value: 4,
+        totalCount: 10,
+      },
+      {
+        label: "3",
+        value: 3,
+        totalCount: 20,
+      },
+      {
+        label: "2",
+        value: 2,
+        totalCount: 1,
+      },
+      {
+        label: "1",
+        value: 1,
+        totalCount: 3,
+      },
+    ],
+    totalReviews: [
+      {
+        rating: 5,
+        reviewMsg: "Loved it!!!",
+        user: { name: "piku" },
+        dated: new Date(),
+        upVotes: 12,
+        downVote: 9,
+      },
+    ],
+  },
+  isOnlyFewLeft: true,
+  isReturnExchangeValid: true,
+  isAvailableInStock: true,
+};
