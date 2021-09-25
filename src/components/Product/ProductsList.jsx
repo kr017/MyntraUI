@@ -1,9 +1,13 @@
 import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { useHistory } from "react-router-dom";
 
 import { ProductTile } from "../../components";
+import { useProduct } from "../../context";
+
 const useStyles = makeStyles(theme => ({
+  root: {
+    paddingTop: "10px",
+  },
   sliderContainer: {
     // marginTop: "20px",
     marginBottom: "15px",
@@ -18,15 +22,14 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export function ProductsList(props) {
+  const { productsState } = useProduct();
   const classes = useStyles();
-  const history = useHistory();
-  const { products } = props;
   return (
-    <div>
-      {products ? (
+    <div className={classes.root}>
+      {productsState.products ? (
         <Grid container>
-          {products.map((product, id) => (
-            <Grid item key={id}>
+          {productsState.products.map((product, id) => (
+            <Grid item key={id} style={{ margin: "0 auto" }}>
               <ProductTile
                 details={product}
                 //    play={play}

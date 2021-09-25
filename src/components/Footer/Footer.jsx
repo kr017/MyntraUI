@@ -7,12 +7,12 @@ const useStyles = makeStyles(theme => ({
     padding: "30px 0px 40px 0px",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
+    textAlign: "center",
   },
   content: {
-    display: "flex",
+    display: "inline-flex",
     marginTop: "4px",
+    justifyContent: "center",
   },
   link: {
     textDecoration: "none",
@@ -37,7 +37,7 @@ export function Footer(props) {
       </div>
 
       <div className={classes.content}>
-        Made with <FavoriteIcon htmlColor="#ff3f6ccc" fill />
+        Made with <FavoriteIcon htmlColor="#ff3f6ccc" />
         by{" "}
         <a href="https://linktr.ee/kiranmate" className={classes.link}>
           Kiran Mate

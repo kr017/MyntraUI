@@ -17,4 +17,36 @@ const ratingCalculator = ratings => {
   return [calculatedRating, total];
 };
 
-export { ratingCalculator };
+/**
+ *
+ * @param {*} path
+ * @returns
+ */
+const getCurrentSection = path => {
+  let section = "";
+  if (path.pathname === "/shop/women") {
+    section = "women";
+  } else if (path.pathname === "/shop/men") {
+    section = "men";
+  } else if (path.pathname === "/shop/kids") {
+    section = "kids";
+  } else {
+    section = "dashboard";
+  }
+  return section;
+};
+
+/**
+ *
+ *
+ */
+
+const isItemAdded = (list, id) => {
+  if (list) {
+    return list.find(item => {
+      return item?._id === id;
+    });
+  }
+  return false;
+};
+export { ratingCalculator, getCurrentSection, isItemAdded };

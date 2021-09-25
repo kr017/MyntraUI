@@ -1,6 +1,9 @@
-import { Footer } from "./Footer";
-import { Header } from "./Header";
 import { Slider } from "./Slider";
-import { CartHeader } from "./CartHeader";
+import { ActionButton } from "./ActionButton";
+import Breadcrumbs from "./Breadcrumbs";
+import { InputBox } from "./InputBox";
+import { DialogBox } from "./DialogBox";
 
-export { Header, Footer, Slider, CartHeader };
+import { Loader } from "./Loader";
+
+export { Slider, ActionButton, Breadcrumbs, InputBox, Loader, DialogBox };

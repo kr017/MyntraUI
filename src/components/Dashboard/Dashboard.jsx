@@ -1,11 +1,23 @@
-import { makeStyles } from "@material-ui/core/styles";
-import { useHistory, useLocation } from "react-router-dom";
-import { Header, Footer, Slider } from "../Common";
-import { ProductsList } from "../../components";
-import { MenBanner, KidsBanner, WomenBanner, BeautyBanner } from "../../images";
 import { useEffect, useState } from "react";
+import { useHistory, useLocation } from "react-router-dom";
+import { makeStyles } from "@material-ui/core/styles";
+import { Grid } from "@material-ui/core";
 
-import { getAllProducts } from "../../apis/productService";
+import {
+  getAllProducts,
+  getFiltersList,
+  getItemsFromCart,
+  getItemsFromWishList,
+} from "../../apis/productService";
+
+import { Slider } from "../Common";
+import { ProductsList, Header, Footer } from "../../components";
+import { MenBanner, KidsBanner, WomenBanner, BeautyBanner } from "../../images";
+import { useLogin, useProduct } from "../../context";
+import { Filters } from "../Filters/Filters";
+import { Loader } from "../Common";
+import { useTheme } from "@material-ui/styles";
+
 const useStyles = makeStyles(theme => ({
   sliderContainer: {
     // marginTop: "20px",
@@ -24,7 +36,10 @@ export function Dashboard(params) {
   const classes = useStyles();
   const history = useHistory();
   const path = useLocation();
-  console.log(path);
+  const theme = useTheme();
+  const [showSlider, setShowSlider] = useState(true);
+
+  const [loading, setLoading] = useState(false);
   const banners = [
     {
       src: `${WomenBanner}`,
@@ -55,28 +70,52 @@ export function Dashboard(params) {
   ];
 
   const [products, setProducts] = useState([]);
+  const { productsState, productsDispatch } = useProduct();
+
   function loadList() {
     let requestParams = {};
 
     if (path.pathname === "/shop/women") {
       requestParams.section = "women";
+      setShowSlider(false);
     } else if (path.pathname === "/shop/men") {
       requestParams.section = "men";
+      setShowSlider(false);
     } else if (path.pathname === "/shop/kids") {
       requestParams.section = "kids";
+      setShowSlider(false);
+    } else {
+      setShowSlider(true);
     }
-    // {
-    // section: "women",
-    // category: "jacket",
-    // brand: "shineMore",
-    // color: "black",
-    // }
-    getAllProducts(requestParams)
+
+    setLoading(true);
+    getAllProducts({
+      section: requestParams.section,
+    })
       .then(function (res) {
-        setProducts(res.data.data);
-        // notesDispatch({ type: "GET_NOTES", payload: res.data.data });
+        productsDispatch({ type: "SET_PRODUCTS", payload: res.data.data });
+        getFiltersList({ section: requestParams.section })
+          .then(function (response) {
+            productsDispatch({
+              type: "SET_FILTERS_LIST",
+              payload: {
+                colors: response.data.data.colors,
+                categories: response.data.data.categories,
+                brands: response.data.data.brands,
+              },
+            });
+            productsDispatch({
+              type: "SET_SELECTED_FILTERS",
+              payload: null,
+            });
+          })
+          .catch(error => {});
+
+        setLoading(false);
       })
-      .catch(err => {});
+      .catch(err => {
+        setLoading(false);
+      });
   }
   useEffect(
     () => {
@@ -89,30 +128,61 @@ export function Dashboard(params) {
     <div>
       <Header />
 
-      <div
-        className={classes.sliderContainer}
-        // onMouseEnter={() => setPlay(true)}
-        // onMouseLeave={() => setPlay(false)}
-      >
-        <Slider
-          className={classes.imageSlider}
-          sliderItems={banners}
-          sliderType="fade"
-          sliderAutoPlay={true}
-          sliderStopOnHover={false}
-          slideNavigatorsHide={true}
-          sliderIndicators
-          sliderIndicatorsStyle={{
-            padding: "10px",
-          }}
-          // sliderActiveIndicator={{
-          //   color: "pink",
-          // }}
-        />
-      </div>
+      {showSlider && (
+        <div
+          className={classes.sliderContainer}
+          // onMouseEnter={() => setPlay(true)}
+          // onMouseLeave={() => setPlay(false)}
+        >
+          <Slider
+            className={classes.imageSlider}
+            sliderItems={banners}
+            sliderType="fade"
+            sliderAutoPlay={true}
+            sliderStopOnHover={false}
+            slideNavigatorsHide={true}
+            sliderIndicators
+            sliderIndicatorsStyle={{
+              padding: "10px",
+            }}
+            // sliderActiveIndicator={{
+            //   color: "pink",
+            // }}
+          />
+        </div>
+      )}
 
-      <ProductsList products={products} />
-      <Footer />
+      {loading ? (
+        <Loader />
+      ) : (
+        <div>
+          <Grid container style={{ paddingTop: "20px" }}>
+            <Grid
+              item
+              md={3}
+              lg={3}
+              xl={3}
+              display={{ xs: "none", sm: "none" }}
+            >
+              <Filters />
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={9}
+              lg={9}
+              xl={9}
+              // display={{ xs: "flex", sm: "flex", md: "flex", lg: "flex" }}
+            >
+              <ProductsList products={products} />
+            </Grid>
+          </Grid>
+          <Grid>
+            <Footer />
+          </Grid>
+        </div>
+      )}
     </div>
   );
 }

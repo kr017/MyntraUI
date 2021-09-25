@@ -8,13 +8,18 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
+    "axios": "^0.21.1",
+    "formik": "^2.2.9",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-material-ui-carousel": "^2.3.1",
+    "react-router-breadcrumbs-hoc": "^4.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "react-spinners": "^0.11.0",
+    "react-stripe-checkout": "^2.6.3",
     "web-vitals": "^1.1.2",
-    "axios": "^0.21.1"
+    "yup": "^0.32.9"
   },
   "scripts": {
     "start": "react-scripts start",

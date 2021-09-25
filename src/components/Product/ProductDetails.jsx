@@ -1,20 +1,32 @@
-import { Button, Grid } from "@material-ui/core";
+import { useEffect, useState } from "react";
+import { useHistory, useParams } from "react-router-dom";
+import { Box, Button, Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import FilledFavoriteIcon from "@material-ui/icons/Favorite";
 import ArrowForwardIcon from "@material-ui/icons/ArrowForwardIos";
 import StarIcon from "@material-ui/icons/StarOutlined";
 import LocalMallIcon from "@material-ui/icons/LocalMall";
 import ArrowForwardedIcon from "@material-ui/icons/ArrowForward";
-import ExchangeIcon from "@material-ui/icons/SwapHoriz";
-import { useHistory, useParams } from "react-router-dom";
-import { Header } from "../Common";
-import { useEffect } from "react";
-import { getProductDetails } from "../../apis/productService";
-import { useState } from "react";
-import { ratingCalculator } from "../../utils/utilities";
 import NotesIcon from "@material-ui/icons/Notes";
+import ExchangeIcon from "@material-ui/icons/SwapHoriz";
+
+import {
+  addItemToCart,
+  addItemToWishList,
+  getProductDetails,
+} from "../../apis/productService";
+import { isItemAdded, ratingCalculator } from "../../utils/utilities";
+
+import { ActionButton, Breadcrumbs } from "../Common";
+import { Header } from "../../components";
+import { useLogin, useProduct } from "../../context";
+
 const useStyles = makeStyles(theme => ({
+  container: {
+    padding: "20px 28px",
+  },
   imgContainer: {
     border: "1px solid #f5f5f6",
 
@@ -148,23 +160,6 @@ const useStyles = makeStyles(theme => ({
     fontSize: "14px",
   },
 
-  bagActionBtn: {
-    color: "#fff",
-    backgroundColor: "#ff3e6c",
-    borderColor: "#ff3e6c",
-    fontWeight: 600,
-    padding: "12px",
-    marginRight: "20px",
-    "&:hover": {
-      backgroundColor: "#ec5e80",
-    },
-  },
-  wishListActionBtn: {
-    border: "1px solid #d4d5d9",
-    fontWeight: 600,
-    padding: "12px 30px",
-  },
-
   returnExchangeContainer: {
     fontWeight: 500,
     fontSize: "16px",
@@ -205,9 +200,11 @@ const useStyles = makeStyles(theme => ({
 export function ProductDetails(params) {
   const classes = useStyles();
   const history = useHistory();
+  const { userState } = useLogin();
+  const { productsState, productsDispatch } = useProduct();
 
   const [product, setProduct] = useState(null);
-  const isAddedInWishList = true;
+
   const isAddedInBag = false;
   const selectedProduct = useParams();
   useEffect(() => {
@@ -215,197 +212,231 @@ export function ProductDetails(params) {
       setProduct(res.data.data)
     );
   }, []);
+
+  const handleAddToWishlist = product => {
+    userState.token
+      ? addItemToWishList({ _id: product._id })
+          .then(res => {
+            productsDispatch({
+              type: "SET_WISHLIST_ITEMS",
+              payload: res.data.data,
+            });
+          })
+          .catch(err => {})
+      : useHistory.push("/login");
+  };
+
+  const handleAddToCart = product => {
+    userState.token
+      ? addItemToCart({ _id: product._id, quantity: 1 })
+          .then(res => {
+            productsDispatch({
+              type: "SET_CART_ITEMS",
+              payload: res.data.data,
+            });
+          })
+          .catch(err => {})
+      : useHistory.push("/login");
+  };
+
   return (
     <div>
       <Header />
-      {product && (
-        <div style={{ display: "flex", padding: "8px 18px 0px 1px" }}>
-          <div style={{ width: "60%" }}>
-            <Grid container>
-              {product?.image?.map((pic, id) => {
-                return (
-                  <Grid
-                    item
-                    key={id}
-                    xs={12}
-                    sm={6}
-                    md={6}
-                    lg={6}
-                    xl={6}
-                    style={{ padding: "0px 0px 10px 10px" }}
-                  >
-                    <div className={classes.imgContainer}>
-                      <img
-                        className={classes.imgGrid}
-                        src={pic}
-                        alt="product_img"
-                      />
-                    </div>
-                  </Grid>
-                );
-              })}
-            </Grid>
-          </div>{" "}
-          <div style={{ width: "40%", paddingLeft: "20px" }}>
-            <div className={classes.productBasic}>
-              <div className={classes.productBrand}>{product?.brand}</div>
-              <div className={classes.productName}>{product?.name}</div>
+      <Box className={classes.container}>
+        {product && (
+          <>
+            {/* <Breadcrumbs item={product?.name} /> */}
+            <div style={{ display: "flex", padding: "8px 18px 0px 1px" }}>
+              <div style={{ width: "60%" }}>
+                <Grid container>
+                  {product?.image?.map((pic, id) => {
+                    return (
+                      <Grid
+                        item
+                        key={id}
+                        xs={12}
+                        sm={6}
+                        md={6}
+                        lg={6}
+                        xl={6}
+                        // style={{ padding: "0px 0px 10px 10px" }}
+                      >
+                        <div className={classes.imgContainer}>
+                          <img
+                            className={classes.imgGrid}
+                            src={pic}
+                            alt="product_img"
+                          />
+                        </div>
+                      </Grid>
+                    );
+                  })}
+                </Grid>
+              </div>{" "}
+              <div style={{ width: "40%", paddingLeft: "20px" }}>
+                <div className={classes.productBasic}>
+                  <div className={classes.productBrand}>{product?.brand}</div>
+                  <div className={classes.productName}>{product?.name}</div>
 
-              {/* rating */}
-              {product?.ratingsReviews?.ratings && (
-                <div className={classes.ratingContainer}>
+                  {/* rating */}
                   {product?.ratingsReviews?.ratings && (
-                    <span>
-                      {ratingCalculator(product?.ratingsReviews?.ratings)[0]}{" "}
-                      <StarIcon fontSize="small" htmlColor="#68D391" />{" "}
-                    </span>
-                  )}
-
-                  {product?.ratingsReviews?.ratings?.length && (
-                    <span>
-                      <span className={classes.seperator}>| </span>
+                    <div className={classes.ratingContainer}>
                       {product?.ratingsReviews?.ratings && (
-                        <span className={classes.ratings}>
+                        <span style={{ display: "inline-flex" }}>
                           {
                             ratingCalculator(
                               product?.ratingsReviews?.ratings
-                            )[1]
+                            )[0]
                           }{" "}
-                          Ratings
+                          <StarIcon fontSize="small" htmlColor="#68D391" />{" "}
                         </span>
                       )}
-                    </span>
+
+                      {product?.ratingsReviews?.ratings?.length && (
+                        <span>
+                          <span className={classes.seperator}>| </span>
+                          {product?.ratingsReviews?.ratings && (
+                            <span className={classes.ratings}>
+                              {
+                                ratingCalculator(
+                                  product?.ratingsReviews?.ratings
+                                )[1]
+                              }{" "}
+                              Ratings
+                            </span>
+                          )}
+                        </span>
+                      )}
+                    </div>
                   )}
                 </div>
-              )}
-            </div>
 
-            {/* pricing */}
-            <div className={classes.priceContainer}>
-              <span className={classes.offerPrice}>
-                {"Rs. "} {product?.price?.offerPrice}
-              </span>
-              {product?.price?.MRP && (
-                <strike className={classes.mrpPrice}>
-                  {"Rs. "}
-                  {product?.price?.MRP}
-                </strike>
-              )}
-              {product?.price?.offerLabel && (
-                <span className={classes.offerLabel}>
-                  ({product?.price?.offerLabel})
-                </span>
-              )}
-
-              <div>
-                <span className={classes.taxLabel}>inclusive of all taxes</span>
-              </div>
-            </div>
-
-            {/* sizing */}
-            {product?.sizes && product?.sizes?.length > 0 ? (
-              <div className={classes.sizeDetails}>
-                <div>
-                  <span className={classes.selectSizeLabel}>Select Size</span>
-                  <span className={classes.sizeChartLabel}>
-                    size chart <ArrowForwardIcon fontSize="small" />
+                {/* pricing */}
+                <div className={classes.priceContainer}>
+                  <span className={classes.offerPrice}>
+                    {"Rs. "} {product?.price?.offerPrice}
                   </span>
+                  {product?.price?.MRP && (
+                    <strike className={classes.mrpPrice}>
+                      {"Rs. "}
+                      {product?.price?.MRP}
+                    </strike>
+                  )}
+                  {product?.price?.offerLabel && (
+                    <span className={classes.offerLabel}>
+                      ({product?.price?.offerLabel})
+                    </span>
+                  )}
+
+                  <div>
+                    <span className={classes.taxLabel}>
+                      inclusive of all taxes
+                    </span>
+                  </div>
                 </div>
-                <div className={classes.sizesContainer}>
-                  {product?.sizes.map(size => (
-                    <Button
-                      className={`${classes.sizeAction}`}
-                      disabled={!size.isAvailable}
-                    >
-                      {!size.isAvailable ? (
-                        <>
-                          <div className={classes.strikeButton}></div>
-                          <div className={classes.sizeActionLabel}>
-                            {size.label}
-                          </div>
-                        </>
-                      ) : (
-                        // </span>
-                        <div className={classes.sizeActionLabel}>
-                          {size.label}
-                        </div>
-                      )}
-                    </Button>
-                  ))}
+
+                {/* sizing */}
+                {product?.sizes && product?.sizes?.length > 0 ? (
+                  <div className={classes.sizeDetails}>
+                    <div>
+                      <span className={classes.selectSizeLabel}>
+                        Select Size
+                      </span>
+                      <span className={classes.sizeChartLabel}>
+                        size chart <ArrowForwardIcon fontSize="small" />
+                      </span>
+                    </div>
+                    <div className={classes.sizesContainer}>
+                      {product?.sizes.map(size => (
+                        <Button
+                          className={`${classes.sizeAction}`}
+                          disabled={!size.isAvailable}
+                        >
+                          {!size.isAvailable ? (
+                            <>
+                              <div className={classes.strikeButton}></div>
+                              <div className={classes.sizeActionLabel}>
+                                {size.label}
+                              </div>
+                            </>
+                          ) : (
+                            // </span>
+                            <div className={classes.sizeActionLabel}>
+                              {size.label}
+                            </div>
+                          )}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className={classes.oneSizeContainer}>Onesize</div>
+                )}
+
+                {/* action area  */}
+                <div className={classes.actionContainer}>
+                  {!isItemAdded(productsState?.cartItems, product?._id) ? (
+                    <ActionButton
+                      kind="PRIMARY"
+                      label="add to bag"
+                      style={{ paddingLeft: "45px", paddingRight: "45px" }}
+                      startIcon={<LocalMallIcon fontSize="small" />}
+                      handleClick={() => {
+                        handleAddToCart(product);
+                      }}
+                    />
+                  ) : (
+                    <ActionButton
+                      kind="PRIMARY"
+                      endIcon={<ArrowForwardedIcon />}
+                      style={{ paddingLeft: "30px", paddingRight: "50px" }}
+                      label="go to bag"
+                    />
+                  )}
+
+                  {!isItemAdded(productsState?.wishlistItems, product?._id) ? (
+                    <ActionButton
+                      kind="SECONDARY"
+                      label="wishlist"
+                      startIcon={<FavoriteBorderIcon />}
+                      handleClick={() => {
+                        handleAddToWishlist(product);
+                      }}
+                    />
+                  ) : (
+                    <ActionButton
+                      kind="SECONDARY_FILLED"
+                      label="wishlisted"
+                      startIcon={<FilledFavoriteIcon htmlColor="#ff3e6c" />}
+                    />
+                  )}
+                </div>
+
+                <div className={classes.otherDetails}>
+                  {product.isReturnExchangeValid && (
+                    <div className={classes.returnExchangeContainer}>
+                      <ExchangeIcon fontSize="large" htmlColor="#696e79" /> Easy
+                      30 days return & exchange available
+                    </div>
+                  )}
+
+                  {product?.description && (
+                    <div className={classes.detailsContainer}>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <span className={classes.productDetailsLabel}>
+                          Product Details{" "}
+                        </span>
+                        <NotesIcon />
+                      </div>
+                      <p style={{ fontSize: "16px" }}>{product?.description}</p>
+                    </div>
+                  )}
                 </div>
               </div>
-            ) : (
-              <div className={classes.oneSizeContainer}>Onesize</div>
-            )}
-
-            {/* action area  */}
-            <div className={classes.actionContainer}>
-              {!isAddedInBag ? (
-                <Button
-                  variant="outlined"
-                  startIcon={<LocalMallIcon fontSize="small" />}
-                  style={{ paddingLeft: "45px", paddingRight: "45px" }}
-                  className={classes.bagActionBtn}
-                >
-                  Add to bag
-                </Button>
-              ) : (
-                <Button
-                  variant="contained"
-                  endIcon={<ArrowForwardedIcon />}
-                  style={{ paddingLeft: "30px", paddingRight: "50px" }}
-                  className={classes.bagActionBtn}
-                >
-                  go to bag
-                </Button>
-              )}
-
-              {!isAddedInWishList ? (
-                <Button
-                  startIcon={<FavoriteBorderIcon />}
-                  className={classes.wishListActionBtn}
-                >
-                  wishlist
-                </Button>
-              ) : (
-                <Button
-                  variant="contained"
-                  style={{
-                    color: "#fff",
-                    backgroundColor: "#535766",
-                    border: "1px solid #535766",
-                  }}
-                  startIcon={<FilledFavoriteIcon htmlColor="#ff3e6c" />}
-                  className={classes.wishListActionBtn}
-                >
-                  wishlisted
-                </Button>
-              )}
-            </div>
-
-            <div className={classes.otherDetails}>
-              {product.isReturnExchangeValid && (
-                <div className={classes.returnExchangeContainer}>
-                  <ExchangeIcon fontSize="large" htmlColor="#696e79" /> Easy 30
-                  days return & exchange available
-                </div>
-              )}
-
-              {product?.description && (
-                <div className={classes.detailsContainer}>
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <span className={classes.productDetailsLabel}>
-                      Product Details{" "}
-                    </span>
-                    <NotesIcon />
-                  </div>
-                  <p style={{ fontSize: "16px" }}>{product?.description}</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+            </div>{" "}
+          </>
+        )}
+      </Box>
     </div>
   );
 }

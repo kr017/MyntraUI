@@ -1,10 +1,17 @@
-import { makeStyles } from "@material-ui/core/styles";
-import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
-import StarIcon from "@material-ui/icons/StarOutlined";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { ratingCalculator } from "../../utils/utilities";
+import { makeStyles } from "@material-ui/core/styles";
+
+import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
+import FilledFavoriteIcon from "@material-ui/icons/Favorite";
+
+import StarIcon from "@material-ui/icons/StarOutlined";
+
+import { isItemAdded, ratingCalculator } from "../../utils/utilities";
 import { Slider } from "../Common";
+import { useLogin, useProduct } from "../../context";
+import { addItemToWishList } from "../../apis/productService";
+
 const useStyles = makeStyles(theme => ({
   root: {
     width: "210px",
@@ -61,6 +68,7 @@ const useStyles = makeStyles(theme => ({
       opacity: 1,
       // transition: "opacity .5s linear",
     },
+
     "& .brandName": {
       fontWeight: "500",
     },
@@ -147,6 +155,7 @@ const useStyles = makeStyles(theme => ({
   },
 
   wishlist: {
+    fontWeight: 500,
     textAlign: "center",
     width: "80%",
     padding: "8px 12px",
@@ -160,22 +169,56 @@ const useStyles = makeStyles(theme => ({
       // color: "red",
     },
   },
+  wishlisted: {
+    fontWeight: 500,
+    textAlign: "center",
+    width: "80%",
+    padding: "8px 12px",
+    color: "#fff",
+    backgroundColor: "#535766",
+    border: "1px solid #d4d5d9",
+    display: "flex",
+    justifyContent: "center",
+    textTransform: "uppercase",
+    "&:hover": {
+      border: "1px solid #535766",
+      // color: "red",
+    },
+  },
 }));
 
 export function ProductTile(props) {
   const classes = useStyles();
   const history = useHistory();
   const { details } = props;
+  const { userState } = useLogin();
+  const { productsState, productsDispatch } = useProduct();
 
   const [play, setPlay] = useState(false);
+
+  const handleAddToWishlist = product => {
+    userState.token
+      ? addItemToWishList({ _id: product._id })
+          .then(res => {
+            productsDispatch({
+              type: "SET_WISHLIST_ITEMS",
+              payload: res.data.data,
+            });
+          })
+          .catch(err => {})
+      : useHistory.push("/login");
+  };
+
   return (
     <div
       className={classes.root}
-      onClick={() => history.push(`/shop/${details._id}`)}
       onMouseEnter={() => setPlay(true)}
       onMouseLeave={() => setPlay(false)}
     >
-      <div className={classes.pictureContainer}>
+      <div
+        className={classes.pictureContainer}
+        onClick={() => history.push(`/shop/${details._id}`)}
+      >
         {/* <img
           srcSet={details?.image[0]}
           loading="lazy"
@@ -204,12 +247,26 @@ export function ProductTile(props) {
         />
       </div>
       {details?.tag && <div className="tagContainer">{details?.tag}</div>}
-      <div className="wishlistContainer">
-        <span className={classes.wishlist}>
-          <FavoriteBorderIcon />
-          wishlist
-        </span>
-      </div>
+      {!isItemAdded(productsState?.wishlistItems, details?._id) ? (
+        <div
+          className="wishlistContainer"
+          onClick={() => {
+            handleAddToWishlist(details);
+          }}
+        >
+          <span className={classes.wishlist}>
+            <FavoriteBorderIcon />
+            wishlist
+          </span>
+        </div>
+      ) : (
+        <div className="wishlistContainer">
+          <span className={classes.wishlisted}>
+            <FilledFavoriteIcon htmlColor="#ff3e6c" />
+            wishlisted
+          </span>
+        </div>
+      )}
 
       {details?.ratingsReviews?.ratings && (
         <div className="productRatingContainer">
@@ -226,7 +283,12 @@ export function ProductTile(props) {
         <div className="brandName">{details.brand}</div>
         <div className="productName">{details.name}</div>
         <div className="productSizes">
-          Sizes: <span className="sizes">S,M,L,XL</span>
+          Sizes:{" "}
+          {details?.sizes && details?.sizes?.length > 0 ? (
+            <span className="sizes">S,M,L,XL</span>
+          ) : (
+            <span>Onesize</span>
+          )}
         </div>
         <div>
           {/* price */}
@@ -242,9 +304,7 @@ export function ProductTile(props) {
           )}
           {/* discountLabel */}
           {details?.price?.offerLabel && (
-            <span className="offer">
-              "(" + `${details?.price?.offerLabel}` + ")"
-            </span>
+            <span className="offer">({`${details?.price?.offerLabel}`}) </span>
           )}
         </div>
       </div>

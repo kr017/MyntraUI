@@ -1,6 +1,16 @@
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import "./App.css";
-import { Dashboard, ProductDetails, WishList, Bag, Login } from "./components";
+import {
+  Dashboard,
+  ProductDetails,
+  Login,
+  SignUp,
+  WishList,
+  Bag,
+  Address,
+  Payment,
+} from "./components";
+import { PrivateRoutes } from "./PrivateRoutes";
 function App() {
   return (
     <BrowserRouter>
@@ -9,12 +19,13 @@ function App() {
         <Route path="/shop/women" component={Dashboard} exact />{" "}
         <Route path="/shop/men" component={Dashboard} exact />{" "}
         <Route path="/shop/kids" component={Dashboard} exact />
-        {/* <Route path="/productDetails" component={ProductDetails} exact /> */}
-        {/* <Route path='/shop/:id' element={<ProductDetailPage />} /> */}
         <Route path="/shop/:id" component={ProductDetails} exact />
-        <Route path="/wishlist" component={WishList} exact />
-        <Route path="/checkout/cart" component={Bag} exact />
         <Route path="/login" component={Login} exact />
+        <Route path="/signup" component={SignUp} exact />
+        <PrivateRoutes path="/wishlist" component={WishList} exact />
+        <PrivateRoutes path="/checkout/cart" component={Bag} exact />
+        <PrivateRoutes path="/checkout/address" component={Address} exact />
+        <PrivateRoutes path="/checkout/payment" component={Payment} exact />
       </Switch>
     </BrowserRouter>
   );

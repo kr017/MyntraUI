@@ -14,7 +14,7 @@ import {
   CartHeader,
   Footer,
   BagTile,
-  AddressTile,
+  AddressBigTile,
   OrderTile,
   AddressForm,
 } from "../../components";
@@ -43,7 +43,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const Bag = () => {
+export const Address = () => {
   const classes = useStyles();
   const { userState, userDispatch } = useLogin();
   const { productsState, productsDispatch } = useProduct();
@@ -126,12 +126,11 @@ export const Bag = () => {
           xl={8}
           className={classes.first}
         >
-          <AddressTile
-            handleChangeAddressClick={() => {
-              handleOpen();
-            }}
-          />
-
+          Select delivery address
+          {userState?.addresses?.length > 0 &&
+            userState.addresses.map((address, id) => (
+              <AddressBigTile details={address} />
+            ))}
           {productsState.cartItems.map((cartItem, id) => (
             <BagTile details={cartItem} key={id} />
           ))}

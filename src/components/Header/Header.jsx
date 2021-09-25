@@ -1,4 +1,8 @@
+import { useEffect, useRef, useState } from "react";
+import { Link, useHistory, useRouteMatch, useLocation } from "react-router-dom";
+
 import {
+  AppBar,
   Badge,
   ClickAwayListener,
   Grid,
@@ -11,14 +15,19 @@ import FavIcon from "@material-ui/icons/FavoriteBorderOutlined";
 import BagIcon from "@material-ui/icons/LocalMallOutlined";
 import SearchIcon from "@material-ui/icons/Search";
 import logo from "../../images/logo.jpg";
-import { Link, useHistory, useRouteMatch } from "react-router-dom";
 
-import { useState } from "react";
-import { ProfileInfoCard } from "../";
+import { ProfileInfoCard } from "../../components";
+import { useLogin, useProduct } from "../../context";
+import {
+  getAllProducts,
+  getItemsFromCart,
+  getItemsFromWishList,
+} from "../../apis/productService";
 
 const useStyles = makeStyles(theme => ({
   root: {
     position: "sticky",
+
     boxShadow: "0 4px 12px 0 #0000000d",
     // lineHeight: "80px",
     width: "100%",
@@ -99,7 +108,7 @@ const useStyles = makeStyles(theme => ({
 
   inputRoot: {
     color: "inherit",
-    // width: "50vw",
+    width: "400px",
     [theme.breakpoints.down("xs")]: {
       display: "none",
     },
@@ -135,14 +144,20 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    cursor: "pointer",
   },
 }));
 
 export function Header() {
   const classes = useStyles();
   const history = useHistory();
+  const path = useLocation();
   const [anchorEl, setAnchorEl] = useState(null);
+  const { userState } = useLogin();
+  const searchQuery = useRef();
 
+  const { productsState, productsDispatch } = useProduct();
+  const [searchText, setSearchText] = useState("");
   const open = Boolean(anchorEl);
   const handleProfileMenuOpen = e => {
     setAnchorEl(e.currentTarget);
@@ -152,10 +167,34 @@ export function Header() {
     setAnchorEl(null);
     // }, 500);
   };
-  const isLogin = useRouteMatch("/login")?.isExact;
 
+  const isLogin = useRouteMatch("/login")?.isExact;
+  const loadDetails = () => {
+    // get wishlist if logged in
+    if (userState.token) {
+      getItemsFromWishList().then(res =>
+        productsDispatch({
+          type: "SET_WISHLIST_ITEMS",
+          payload: res.data.data?.products,
+        })
+      );
+      getItemsFromCart().then(res =>
+        productsDispatch({
+          type: "SET_CART_ITEMS",
+          payload: res.data.data?.products,
+        })
+      );
+    }
+  };
+  useEffect(
+    () => {
+      loadDetails();
+    },
+    // eslint-disable-next-line
+    [path]
+  );
   return (
-    <div className={classes.root}>
+    <AppBar className={classes.root} color={"#fff"}>
       <Grid container className={classes.header}>
         <Grid className={classes.catInfoLogo}>
           {/* Myntra */}
@@ -211,6 +250,7 @@ export function Header() {
               </div>
               <InputBase
                 placeholder="Search for products, brands and more"
+                inputRef={searchQuery}
                 classes={{
                   root: classes.inputRoot,
                   input: classes.inputInput,
@@ -218,11 +258,23 @@ export function Header() {
                 inputProps={{
                   "aria-label": "Search",
                 }}
-                onKeyPress={e => {
-                  //   handleSearch(e);
-                }}
-                onChange={e => {
-                  //   handleSearch(e);
+                onKeyPress={() => {
+                  setSearchText(searchQuery.current.value);
+
+                  getAllProducts({
+                    sections: "women", //requestParams.section,
+                    search: searchText,
+                  }).then(function (res) {
+                    productsDispatch({
+                      type: "SET_PRODUCTS",
+                      payload: res.data.data,
+                    });
+                    //   handleSearch(e);
+                  });
+
+                  // onChange={() => {
+
+                  //   //   handleSearch(e);
                 }}
               />
             </div>
@@ -249,7 +301,17 @@ export function Header() {
             className={classes.container}
             onClick={() => history.push("/wishlist")}
           >
-            <FavIcon htmlColor="#5d5b5b" />
+            <Badge
+              badgeContent={
+                productsState?.wishlistItems
+                  ? productsState?.wishlistItems?.length
+                  : null
+              }
+              color="secondary"
+              //  style={{ backgroundColor: "red" }}
+            >
+              <FavIcon htmlColor="#5d5b5b" />
+            </Badge>
             <span>wishlist</span>
           </div>
           <div
@@ -257,9 +319,12 @@ export function Header() {
             onClick={() => history.push("/checkout/cart")}
           >
             <Badge
-              badgeContent={4}
+              badgeContent={
+                productsState?.cartItems
+                  ? productsState?.cartItems?.length
+                  : null
+              }
               color="secondary"
-              //  style={{ backgroundColor: "red" }}
             >
               <BagIcon htmlColor="#5d5b5b" />
             </Badge>
@@ -283,6 +348,6 @@ export function Header() {
           <ProfileInfoCard />
         </Popover>
       </ClickAwayListener>
-    </div>
+    </AppBar>
   );
 }
