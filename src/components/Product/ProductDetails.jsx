@@ -391,6 +391,9 @@ export function ProductDetails(params) {
                       endIcon={<ArrowForwardedIcon />}
                       style={{ paddingLeft: "30px", paddingRight: "50px" }}
                       label="go to bag"
+                      handleClick={() => {
+                        history.push("/checkout/cart");
+                      }}
                     />
                   )}
 

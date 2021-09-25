@@ -175,13 +175,13 @@ export function Header() {
       getItemsFromWishList().then(res =>
         productsDispatch({
           type: "SET_WISHLIST_ITEMS",
-          payload: res.data.data?.products,
+          payload: res?.data?.data?.products,
         })
       );
       getItemsFromCart().then(res =>
         productsDispatch({
           type: "SET_CART_ITEMS",
-          payload: res.data.data?.products,
+          payload: res.data?.data?.products,
         })
       );
     }
@@ -223,18 +223,18 @@ export function Header() {
           >
             Kids
           </Link>
-          <Link
+          {/* <Link
             to="/shop/home"
             className={`${classes.catContainer} ${classes.catContainerHome}`}
           >
             Home & Living{" "}
-          </Link>
-          <Link
+          </Link> */}
+          {/* <Link
             to="/shop/beauty"
             className={`${classes.catContainer} ${classes.catContainerBeauty}`}
           >
             Beauty
-          </Link>
+          </Link> */}
         </Grid>
         <Grid>
           <span

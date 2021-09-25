@@ -17,8 +17,17 @@ const useStyles = makeStyles(theme => ({
 
 export function InputBox(props) {
   const classes = useStyles();
-  const { id, name, label, value, onChange, error, helperText, fullWidth } =
-    props;
+  const {
+    id,
+    name,
+    label,
+    value,
+    onChange,
+    error,
+    helperText,
+    fullWidth,
+    placeholder,
+  } = props;
   return (
     <TextField
       inputProps={{
@@ -37,6 +46,7 @@ export function InputBox(props) {
       error={error}
       helperText={helperText}
       fullWidth={fullWidth}
+      placeholder={placeholder}
     />
   );
 }

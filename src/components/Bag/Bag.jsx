@@ -8,7 +8,9 @@ import {
 } from "@material-ui/core";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+import { getItemsFromCart } from "../../apis/productService";
 
 import {
   CartHeader,
@@ -30,6 +32,7 @@ const useStyles = makeStyles(theme => ({
     width: "70%",
     margin: "0 auto",
     padding: "0px 15px",
+    minHeight: "75vh",
     [theme.breakpoints.down("sm")]: {
       width: "100%",
     },
@@ -45,6 +48,8 @@ const useStyles = makeStyles(theme => ({
 
 export const Bag = () => {
   const classes = useStyles();
+  const history = useHistory();
+
   const { userState, userDispatch } = useLogin();
   const { productsState, productsDispatch } = useProduct();
   const [open, setOpen] = useState(false);
@@ -59,7 +64,7 @@ export const Bag = () => {
   };
 
   const [value, setValue] = useState(userState?.selectedAddress?._id);
-  console.log(userState);
+
   const handleChange = (address, id) => {
     setValue(id);
     userDispatch({
@@ -68,6 +73,18 @@ export const Bag = () => {
     });
   };
 
+  useEffect(
+    () => {
+      getItemsFromCart().then(res =>
+        productsDispatch({
+          type: "SET_CART_ITEMS",
+          payload: res.data?.data?.products,
+        })
+      );
+    },
+    // eslint-disable-next-line
+    []
+  );
   const getAddresses = () => {
     return (
       <div>
@@ -132,7 +149,7 @@ export const Bag = () => {
             }}
           />
 
-          {productsState.cartItems.map((cartItem, id) => (
+          {productsState?.cartItems?.map((cartItem, id) => (
             <BagTile details={cartItem} key={id} />
           ))}
         </Grid>
@@ -146,6 +163,12 @@ export const Bag = () => {
           className={classes.second}
         >
           <OrderTile />
+
+          <ActionButton
+            kind="SIMPLE_PRIMARY"
+            label="Place Order"
+            handleClick={() => history.push("/checkout/address")}
+          />
         </Grid>
       </Grid>
 

@@ -66,9 +66,10 @@ const useStyles = makeStyles(theme => ({
   },
   active_list: {
     fontSize: "12px",
-    fontWeight: 500,
+    fontWeight: 600,
     color: "#20BD99",
-    borderBottom: "2px solid #20BD99",
+    paddingBottom: "2px",
+    borderBottom: "3px solid #20BD99",
   },
 }));
 export const CartHeader = () => {
@@ -132,7 +133,7 @@ export const CartHeader = () => {
               }
               onClick={() => {
                 if (activeLink === "address" || activeLink === "payment") {
-                  history.push("/checkout/bag");
+                  history.push("/checkout/cart");
                 } else {
                   return;
                 }

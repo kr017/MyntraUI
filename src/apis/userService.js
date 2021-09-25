@@ -13,8 +13,8 @@ export function signup(data) {
 }
 
 export function getAddressList() {
-  return axiosClient.get("/api/addresses");
+  return axiosClient.get("/address/api/addresses");
 }
 export function addAddress(data) {
-  return axiosClient.post("/api/addAddress", data);
+  return axiosClient.post("/address/api/addAddress", data);
 }

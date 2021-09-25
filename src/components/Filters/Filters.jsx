@@ -5,7 +5,7 @@ import { Grid, ListItem, makeStyles, Typography } from "@material-ui/core";
 import Checkbox from "@material-ui/core/Checkbox";
 import { useProduct } from "../../context";
 import { getAllProducts } from "../../apis/productService";
-import { getCurrentSection } from "../../utils/utilities";
+import { getCurrentSection, isItemAdded } from "../../utils/utilities";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -70,7 +70,7 @@ export function Filters() {
   const path = useLocation();
   const { productsState, productsDispatch } = useProduct();
 
-  const setFiletrs = (label, value) => {
+  const setFiletrs = (label, value, isChecked) => {
     let arrCat = productsState?.selectedFilters?.categories
       ? productsState?.selectedFilters?.categories
       : [];
@@ -84,13 +84,28 @@ export function Filters() {
       : [];
 
     if (label === "categories") {
-      arrCat.push(value);
+      if (isChecked) {
+        arrCat.push(value);
+      } else {
+        const index = arrCat.indexOf(value);
+        arrCat.splice(index, 1);
+      }
     }
     if (label === "brands") {
-      arrBrands.push(value);
+      if (isChecked) {
+        arrBrands.push(value);
+      } else {
+        const index = arrBrands.indexOf(value);
+        arrBrands.splice(index, 1);
+      }
     }
     if (label === "colors") {
-      arrColors.push(value);
+      if (isChecked) {
+        arrColors.push(value);
+      } else {
+        const index = arrColors.indexOf(value);
+        arrColors.splice(index, 1);
+      }
     }
     let obj = {
       section: getCurrentSection(path),
@@ -123,8 +138,8 @@ export function Filters() {
               <li className={classes.listStyle}>
                 <Checkbox
                   inputProps={{ padding: "0px", margin: "0px" }}
-                  onChange={() => {
-                    setFiletrs("categories", ele);
+                  onChange={e => {
+                    setFiletrs("categories", ele, e.currentTarget.checked);
                   }}
                   inputProps={{ "aria-label": "primary checkbox" }}
                 />
@@ -140,8 +155,12 @@ export function Filters() {
             {productsState?.filters?.brands?.map((ele, id) => (
               <li className={classes.listStyle}>
                 <Checkbox
-                  onChange={() => {
-                    setFiletrs("brands", ele);
+                  // checked={isItemAdded(
+                  //   productsState?.selectedFilters?.brands,
+                  //   id
+                  // )}
+                  onChange={e => {
+                    setFiletrs("brands", ele, e.currentTarget.checked);
                   }}
                   inputProps={{ "aria-label": "primary checkbox" }}
                 />
@@ -157,8 +176,8 @@ export function Filters() {
               <li className={classes.listStyle}>
                 <Checkbox
                   // checked={true}
-                  onChange={() => {
-                    setFiletrs("colors", ele);
+                  onChange={e => {
+                    setFiletrs("colors", ele, e.currentTarget.checked);
                   }}
                   inputProps={{ "aria-label": "primary checkbox" }}
                 />

@@ -4,9 +4,10 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 
 import { makeStyles } from "@material-ui/core/styles";
-import { Backdrop, Button, CircularProgress, Grid } from "@material-ui/core";
-import { InputBox, ActionButton } from "../Common";
+import { Grid } from "@material-ui/core";
+import { InputBox, ActionButton, SnackbarView } from "../Common";
 import { useLogin } from "../../context";
+import logo from "../../images/logo.jpg";
 
 import { Header } from "../../components";
 import { login } from "../../apis/userService";
@@ -35,6 +36,9 @@ const useStyles = makeStyles(theme => ({
   bannerContainer: {
     height: "160px",
     backgroundColor: "#FFF9E7",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   banner: {
     width: "100%",
@@ -68,6 +72,8 @@ export function Login(props) {
 
   const { userDispatch } = useLogin();
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
   const validationSchema = yup.object({
     email: yup
       .string("Enter your email")
@@ -95,7 +101,31 @@ export function Login(props) {
           }
           history.push("/");
         })
-        .catch(error => {});
+        .catch(error => {
+          if (error.response.status === 400) {
+            setMessage(prevState => ({
+              ...prevState,
+              message:
+                "Wrong password. Try again or click Forgot password to reset it.",
+              type: "error",
+              actionMsg: "OK",
+              actionHandler: () => {
+                history.push("/login");
+              },
+            }));
+          } else {
+            setMessage(prevState => ({
+              ...prevState,
+              message: "Something went wrong please try again",
+              type: "error",
+              actionMsg: "OK",
+              actionHandler: () => {
+                history.push("/login");
+              },
+            }));
+          }
+          setLoading(false);
+        });
     },
   });
 
@@ -103,10 +133,13 @@ export function Login(props) {
     <div className={classes.root}>
       <Header />
 
+      {message && message?.type && <SnackbarView message={message} />}
       <Grid container className={classes.container}>
         <Grid className={classes.content}>
           <div className={classes.bannerContainer}>
-            {/* <img src={LoginBanner} alt="login_banner" /> */}
+            {/* <img src={logo} alt="login_banner" />
+             */}
+            <span style={{ fontSize: "40px" }}>WishAt</span>
           </div>
           <div className={classes.loginContainer}>
             <div className={classes.loginLabel}>
@@ -117,10 +150,7 @@ export function Login(props) {
                   fontSize: "16px",
                   fontWeight: 400,
                 }}
-              >
-                or
-              </span>{" "}
-              Signup
+              ></span>{" "}
             </div>
 
             <form onSubmit={formik.handleSubmit}>
@@ -161,6 +191,17 @@ export function Login(props) {
                 }}
               />
             </form>
+
+            <div
+              style={{
+                textAlign: "center",
+                marginTop: "4px",
+                cursor: "pointer",
+              }}
+              onClick={() => history.push("/signup")}
+            >
+              New user? Signup here
+            </div>
           </div>
         </Grid>
       </Grid>

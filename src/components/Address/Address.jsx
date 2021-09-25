@@ -9,6 +9,7 @@ import {
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 import { useState } from "react";
+import { useHistory } from "react-router-dom";
 
 import {
   CartHeader,
@@ -19,7 +20,7 @@ import {
   AddressForm,
 } from "../../components";
 import { useLogin, useProduct } from "../../context";
-import { ActionButton, DialogBox } from "../Common";
+import { ActionButton, DialogBox, SnackbarView } from "../Common";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -30,6 +31,7 @@ const useStyles = makeStyles(theme => ({
     width: "70%",
     margin: "0 auto",
     padding: "0px 15px",
+    minHeight: "75vh",
     [theme.breakpoints.down("sm")]: {
       width: "100%",
     },
@@ -45,11 +47,13 @@ const useStyles = makeStyles(theme => ({
 
 export const Address = () => {
   const classes = useStyles();
+  const history = useHistory();
+
   const { userState, userDispatch } = useLogin();
   const { productsState, productsDispatch } = useProduct();
   const [open, setOpen] = useState(false);
   const [showAddressForm, setShowAddressForm] = useState(false);
-
+  const [message, setMessage] = useState({});
   const handleOpen = () => {
     setOpen(true);
   };
@@ -59,15 +63,15 @@ export const Address = () => {
   };
 
   const [value, setValue] = useState(userState?.selectedAddress?._id);
-  console.log(userState);
+
   const handleChange = (address, id) => {
     setValue(id);
+
     userDispatch({
       type: "SET_SELECTED_ADDRESS",
       payload: address,
     });
   };
-
   const getAddresses = () => {
     return (
       <div>
@@ -115,6 +119,7 @@ export const Address = () => {
   };
   return (
     <div className={classes.root}>
+      {message && message?.type && <SnackbarView message={message} />}
       <CartHeader />
       <Grid container className={classes.container}>
         <Grid
@@ -129,11 +134,8 @@ export const Address = () => {
           Select delivery address
           {userState?.addresses?.length > 0 &&
             userState.addresses.map((address, id) => (
-              <AddressBigTile details={address} />
+              <AddressBigTile address={address} />
             ))}
-          {productsState.cartItems.map((cartItem, id) => (
-            <BagTile details={cartItem} key={id} />
-          ))}
         </Grid>
         <Grid
           item
@@ -145,6 +147,25 @@ export const Address = () => {
           className={classes.second}
         >
           <OrderTile />
+          <ActionButton
+            kind="SIMPLE_PRIMARY"
+            label="Continue"
+            handleClick={() => {
+              if (!userState?.selectedAddress?._id) {
+                setMessage(prevState => ({
+                  ...prevState,
+                  message: "Please select address",
+                  type: "error",
+                  actionMsg: "OK",
+                  actionHandler: () => {
+                    history.push("/login");
+                  },
+                }));
+              } else {
+                history.push("/checkout/payment");
+              }
+            }}
+          />
         </Grid>
       </Grid>
 

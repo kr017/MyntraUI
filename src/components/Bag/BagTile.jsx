@@ -2,6 +2,7 @@ import { useHistory } from "react-router-dom";
 
 import { Grid, makeStyles } from "@material-ui/core";
 import ClearIcon from "@material-ui/icons/Clear";
+import { removeItemFromCart } from "../../apis/productService";
 const useStyles = makeStyles(theme => ({
   container: {
     display: "flex",
@@ -90,11 +91,7 @@ export const BagTile = props => {
 
   return (
     <div className={classes.root}>
-      <Grid
-        container
-        className={classes.container}
-        onClick={() => history.push(`/shop/${details._id}`)}
-      >
+      <Grid container className={classes.container}>
         <Grid item className={classes.itemContainer}>
           <Grid item className={classes.pictureContainer}>
             <img
@@ -135,7 +132,18 @@ export const BagTile = props => {
         <Grid item>
           <div className={classes.clearContainer}>
             <span>
-              <ClearIcon htmlColor="#9F9F9F" />
+              <ClearIcon
+                htmlColor="#9F9F9F"
+                onClick={() => {
+                  removeItemFromCart({ _id: details._id })
+                    .then(res => {
+                      console.log(res.data);
+                    })
+                    .catch(err => {
+                      console.log(err);
+                    });
+                }}
+              />
             </span>
           </div>
         </Grid>

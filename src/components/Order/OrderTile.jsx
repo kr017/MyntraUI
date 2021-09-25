@@ -2,6 +2,7 @@ import { Grid, makeStyles } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 
 import { useProduct } from "../../context";
+import { calculateCartValue } from "../../utils/utilities";
 import { ActionButton } from "../Common";
 
 const useStyles = makeStyles(theme => ({
@@ -27,6 +28,12 @@ const useStyles = makeStyles(theme => ({
     paddingTop: "8px",
     borderTop: "1px solid #eaeaec",
   },
+  strike: {
+    marginRight: "4px",
+  },
+  discount: {
+    color: "#20BD99",
+  },
 }));
 
 export const OrderTile = () => {
@@ -46,25 +53,37 @@ export const OrderTile = () => {
           <Grid>Total MRP</Grid>
           <Grid>
             {`\u20B9`}
-            {12231}
+
+            {calculateCartValue(productsState?.cartItems)[0]}
           </Grid>
         </Grid>
+
         <Grid container className={classes.priceRow}>
           <Grid>Discount on MRP</Grid>
-          <Grid>
-            {`\u20B9`}
-            {12231}
+          <Grid className={classes.discount}>
+            -{`\u20B9`}
+            {calculateCartValue(productsState?.cartItems)[1]}
           </Grid>
         </Grid>
-        <Grid container className={classes.priceRow}>
+
+        {/* <Grid container className={classes.priceRow}>
           <Grid>Coupon Discount</Grid>
           <Grid>Apply Coupon</Grid>
         </Grid>
+         */}
+
         <Grid container className={classes.priceRow}>
           <Grid>Convenience Fee</Grid>
           <Grid>
             {`\u20B9`}
-            {99}
+            {!calculateCartValue(productsState?.cartItems)[2] ? (
+              <>
+                <strike className={classes.strike}>99</strike>
+                <span className={classes.discount}>FREE</span>
+              </>
+            ) : (
+              99
+            )}
           </Grid>
         </Grid>
 
@@ -75,15 +94,9 @@ export const OrderTile = () => {
           <Grid>Total Amount</Grid>
           <Grid>
             {`\u20B9`}
-            {99}
+            {calculateCartValue(productsState?.cartItems)[3]}
           </Grid>
         </Grid>
-
-        <ActionButton
-          kind="SIMPLE_PRIMARY"
-          label="Place Order"
-          handleClick={() => history.push("/checkout/address")}
-        />
       </div>
     </div>
   );

@@ -40,7 +40,6 @@ const getCurrentSection = path => {
  *
  *
  */
-
 const isItemAdded = (list, id) => {
   if (list) {
     return list.find(item => {
@@ -49,4 +48,34 @@ const isItemAdded = (list, id) => {
   }
   return false;
 };
-export { ratingCalculator, getCurrentSection, isItemAdded };
+
+/**
+ *
+ *
+ */
+const calculateCartValue = cart => {
+  let totalMRP = 0,
+    totalDiscountOnMRP = 0,
+    convenienceFee = false,
+    totalAmount = 0;
+
+  cart.forEach(ele => {
+    let mrp = 0;
+    if (ele?.price?.MRP) {
+      mrp = ele?.price?.MRP;
+    } else {
+      mrp = ele.price?.offerPrice;
+    }
+    totalMRP = parseFloat(totalMRP) + parseFloat(mrp);
+    totalAmount = parseFloat(totalAmount) + parseFloat(ele.price?.offerPrice);
+  });
+  totalDiscountOnMRP = parseFloat(totalMRP) - parseFloat(totalAmount);
+  if (cart.length === 1) {
+    convenienceFee = true;
+    totalAmount = parseFloat(totalAmount) + 99;
+  }
+  return [totalMRP, totalDiscountOnMRP, convenienceFee, totalAmount];
+  //totalMRP  //totalDiscountOnMRP //convenienceFee //totalAmount
+};
+
+export { ratingCalculator, getCurrentSection, isItemAdded, calculateCartValue };

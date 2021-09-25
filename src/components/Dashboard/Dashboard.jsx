@@ -128,60 +128,87 @@ export function Dashboard(params) {
     <div>
       <Header />
 
-      {showSlider && (
-        <div
-          className={classes.sliderContainer}
-          // onMouseEnter={() => setPlay(true)}
-          // onMouseLeave={() => setPlay(false)}
-        >
-          <Slider
-            className={classes.imageSlider}
-            sliderItems={banners}
-            sliderType="fade"
-            sliderAutoPlay={true}
-            sliderStopOnHover={false}
-            slideNavigatorsHide={true}
-            sliderIndicators
-            sliderIndicatorsStyle={{
-              padding: "10px",
+      {showSlider ? (
+        <>
+          <div
+            className={classes.sliderContainer}
+            // onMouseEnter={() => setPlay(true)}
+            // onMouseLeave={() => setPlay(false)}
+          >
+            <Slider
+              className={classes.imageSlider}
+              sliderItems={banners}
+              sliderType="fade"
+              sliderAutoPlay={true}
+              sliderStopOnHover={false}
+              slideNavigatorsHide={true}
+              sliderIndicators
+              sliderIndicatorsStyle={{
+                padding: "10px",
+              }}
+              // sliderActiveIndicator={{
+              //   color: "pink",
+              // }}
+            />
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginBottom: "20px",
+              textTransform: "uppercase",
+              fontWeight: 600,
+              cursor: "pointer",
             }}
-            // sliderActiveIndicator={{
-            //   color: "pink",
-            // }}
-          />
-        </div>
-      )}
-
-      {loading ? (
-        <Loader />
+          >
+            <div
+              onClick={() => {
+                history.push("/shop/men");
+              }}
+              style={{
+                padding: "8px 12px",
+                color: "#fff",
+                backgroundColor: "#ff3e6c",
+              }}
+            >
+              Shop Now
+            </div>
+          </div>
+        </>
       ) : (
-        <div>
-          <Grid container style={{ paddingTop: "20px" }}>
-            <Grid
-              item
-              md={3}
-              lg={3}
-              xl={3}
-              display={{ xs: "none", sm: "none" }}
-            >
-              <Filters />
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              sm={12}
-              md={9}
-              lg={9}
-              xl={9}
-              // display={{ xs: "flex", sm: "flex", md: "flex", lg: "flex" }}
-            >
-              <ProductsList products={products} />
-            </Grid>
-          </Grid>
-          <Grid>
-            <Footer />
-          </Grid>
-        </div>
+        <>
+          {loading ? (
+            <Loader />
+          ) : (
+            <div>
+              <Grid container style={{ paddingTop: "20px" }}>
+                <Grid
+                  item
+                  md={3}
+                  lg={3}
+                  xl={3}
+                  display={{ xs: "none", sm: "none" }}
+                >
+                  <Filters />
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  sm={12}
+                  md={9}
+                  lg={9}
+                  xl={9}
+                  // display={{ xs: "flex", sm: "flex", md: "flex", lg: "flex" }}
+                >
+                  <ProductsList products={products} />
+                </Grid>
+              </Grid>
+              <Grid>
+                <Footer />
+              </Grid>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

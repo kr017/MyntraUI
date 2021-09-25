@@ -26,10 +26,21 @@ const useStyles = makeStyles(theme => ({
 export const AddressBigTile = props => {
   const classes = useStyles();
   const history = useHistory();
-  const { address } = props.details;
+  const address = props.address;
   const { userState, userDispatch } = useLogin();
-  const [value, setValue] = useState(userState?.selectedAddress?._id);
-
+  const [value, setValue] = useState(
+    userState?.selectedAddress?._id
+      ? userState?.selectedAddress?._id
+      : userState?.addresses[0]?._id
+  );
+  console.log(userState, value);
+  const handleChange = (address, id) => {
+    setValue(id);
+    userDispatch({
+      type: "SET_SELECTED_ADDRESS",
+      payload: address,
+    });
+  };
   return (
     <div>
       <Grid container>
@@ -39,7 +50,7 @@ export const AddressBigTile = props => {
             type="radio"
             name="address"
             checked={address?._id === value}
-            // onChange={() => handleChange(address, address._id)}
+            onChange={() => handleChange(address, address._id)}
           />
           {address?.name}
         </Grid>{" "}

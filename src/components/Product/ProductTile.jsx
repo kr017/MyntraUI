@@ -270,7 +270,7 @@ export function ProductTile(props) {
 
       {details?.ratingsReviews?.ratings && (
         <div className="productRatingContainer">
-          <span>{ratingCalculator(details?.ratingsReviews?.ratings)[0]} </span>
+          <span>{ratingCalculator(details?.ratingsReviews?.ratings)[0]}</span>
           <StarIcon fontSize="small" htmlColor="#68D391" />
           <div className="productRatingCount">
             <div className="seperator">|</div>

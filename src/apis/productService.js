@@ -1,33 +1,41 @@
 import { axiosClient } from "./apiClient";
 
 export function getAllProducts(data) {
-  return axiosClient.post("/shop", data);
+  return axiosClient.post("/product/shop", data);
 }
 
 export function getProductDetails(id) {
-  return axiosClient.get("/shop/" + id);
+  return axiosClient.get("/product/shop/" + id);
 }
 
 export function getFiltersList(data) {
-  return axiosClient.post("/filters", data);
+  return axiosClient.post("/product/filters", data);
 }
 
 export function addItemToWishList(data) {
-  return axiosClient.post("/api/addWishlist", data);
+  return axiosClient.post("/wishlist/api/addWishlist", data);
 }
 
 export function getItemsFromWishList() {
-  return axiosClient.get("/api/wishlist");
+  return axiosClient.get("/wishlist/api/wishlist");
+}
+
+export function removeItemFromWishlist(data) {
+  return axiosClient.post("/wishlist/api/removeWishlist", data);
 }
 
 export function addItemToCart(data) {
-  return axiosClient.post("/api/addCart", data);
+  return axiosClient.post("/cart/api/addCart", data);
 }
 
 export function getItemsFromCart() {
-  return axiosClient.get("/api/cart");
+  return axiosClient.get("/cart/api/cart");
+}
+
+export function removeItemFromCart(data) {
+  return axiosClient.post("/cart/api/removeCart", data);
 }
 
 export function addPaymnet(data) {
-  return axiosClient.post("/api/checkout", data);
+  return axiosClient.post("/cart/api/checkout", data);
 }

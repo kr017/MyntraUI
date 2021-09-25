@@ -1,8 +1,15 @@
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
+import ClearIcon from "@material-ui/icons/Clear";
 
 import { useLogin, useProduct } from "../../context";
-import { addItemToCart } from "../../apis/productService";
+import {
+  addItemToCart,
+  removeItemFromWishlist,
+} from "../../apis/productService";
+import { SnackbarView } from "../Common";
+import { useState } from "react";
+import { ClipLoader } from "react-spinners";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -58,16 +65,26 @@ const useStyles = makeStyles(theme => ({
     textAlign: "center",
     padding: "14px 0px",
   },
+  clearContainer: {
+    position: "absolute",
+    top: "0px",
+    right: "0px",
+  },
 }));
 
 export function WishTile(props) {
   const classes = useStyles();
   const history = useHistory();
   const { details } = props;
+
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
   const { userState } = useLogin();
   const { productsDispatch } = useProduct();
 
   const handleAddToCart = product => {
+    setLoading(true);
     userState.token
       ? addItemToCart({ _id: product._id, quantity: 1 })
           .then(res => {
@@ -75,16 +92,44 @@ export function WishTile(props) {
               type: "SET_CART_ITEMS",
               payload: res.data.data,
             });
+            handleRemoveFromWishlist(product._id);
+            setMessage(prevState => ({
+              ...prevState,
+              message: "Product moved to bag.",
+              type: "success",
+            }));
+            setLoading(false);
           })
-          .catch(err => {})
+          .catch(err => {
+            setMessage(prevState => ({
+              ...prevState,
+              message: "Something went wrong please try again",
+              type: "error",
+            }));
+            setLoading(false);
+          })
       : useHistory.push("/login");
   };
+
+  const handleRemoveFromWishlist = id => {
+    removeItemFromWishlist({ _id: id })
+      .then(res => {
+        // productsDispatch({
+        //   type: "SET_WISHLIST_ITEMS",
+        //   payload: res.data?.data,
+        // });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  const handleMoveToBag = id => {};
   return (
     <div className={classes.root}>
-      <div
-        className={classes.pictureContainer}
-        onClick={() => history.push(`/shop/${details._id}`)}
-      >
+      {message && message?.type && <SnackbarView message={message} />}
+      {loading && <ClipLoader color="#ffffff" loading={true} size={20} />}
+      <div className={classes.pictureContainer}>
         <img
           srcSet={details?.image[0]}
           loading="lazy"
@@ -92,6 +137,16 @@ export function WishTile(props) {
           className={classes.picture}
           alt="product-img"
         />
+        <div className={classes.clearContainer}>
+          <span>
+            <ClearIcon
+              htmlColor="#000"
+              onClick={() => {
+                handleRemoveFromWishlist(details._id);
+              }}
+            />
+          </span>
+        </div>
       </div>
 
       <div>
