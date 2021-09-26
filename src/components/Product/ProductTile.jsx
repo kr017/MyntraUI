@@ -8,9 +8,10 @@ import FilledFavoriteIcon from "@material-ui/icons/Favorite";
 import StarIcon from "@material-ui/icons/StarOutlined";
 
 import { isItemAdded, ratingCalculator } from "../../utils/utilities";
-import { Slider } from "../Common";
+import { Slider, SnackbarView } from "../Common";
 import { useLogin, useProduct } from "../../context";
 import { addItemToWishList } from "../../apis/productService";
+import { ClipLoader } from "react-spinners";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -196,17 +197,41 @@ export function ProductTile(props) {
 
   const [play, setPlay] = useState(false);
 
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
   const handleAddToWishlist = product => {
+    setLoading(true);
     userState.token
       ? addItemToWishList({ _id: product._id })
           .then(res => {
+            let wishlist = [];
+            if (productsState?.wishlistItems) {
+              wishlist = productsState?.wishlistItems;
+              wishlist.push(product);
+            } else {
+              wishlist.push(product);
+            }
             productsDispatch({
               type: "SET_WISHLIST_ITEMS",
-              payload: res.data.data,
+              payload: wishlist,
             });
+            setMessage(prevState => ({
+              ...prevState,
+              message: "Product added to wishlist.",
+              type: "success",
+            }));
+            setLoading(false);
           })
-          .catch(err => {})
-      : useHistory.push("/login");
+          .catch(err => {
+            setMessage(prevState => ({
+              ...prevState,
+              message: "Something went wrong please try again",
+              type: "error",
+            }));
+            setLoading(false);
+          })
+      : history.push("/login");
   };
 
   return (
@@ -215,6 +240,9 @@ export function ProductTile(props) {
       onMouseEnter={() => setPlay(true)}
       onMouseLeave={() => setPlay(false)}
     >
+      {message && message?.type && <SnackbarView message={message} />}
+      {loading && <ClipLoader color="#ffffff" loading={true} size={20} />}
+
       <div
         className={classes.pictureContainer}
         onClick={() => history.push(`/shop/${details._id}`)}

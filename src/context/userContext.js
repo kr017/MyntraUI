@@ -24,6 +24,13 @@ const userReducer = (state, action) => {
     case "SET_SELECTED_ADDRESS":
       return { ...state, selectedAddress: action?.payload };
 
+    case "ADD_ADDRESS":
+      return {
+        return: {
+          ...state,
+          addresses: action?.payload,
+        },
+      };
     default:
       return;
   }

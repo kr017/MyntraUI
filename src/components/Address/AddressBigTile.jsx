@@ -28,12 +28,8 @@ export const AddressBigTile = props => {
   const history = useHistory();
   const address = props.address;
   const { userState, userDispatch } = useLogin();
-  const [value, setValue] = useState(
-    userState?.selectedAddress?._id
-      ? userState?.selectedAddress?._id
-      : userState?.addresses[0]?._id
-  );
-  console.log(userState, value);
+  const [value, setValue] = useState(userState?.selectedAddress?._id);
+
   const handleChange = (address, id) => {
     setValue(id);
     userDispatch({

@@ -19,7 +19,7 @@ import {
 } from "../../apis/productService";
 import { isItemAdded, ratingCalculator } from "../../utils/utilities";
 
-import { ActionButton, Breadcrumbs } from "../Common";
+import { ActionButton, Breadcrumbs, Loader } from "../Common";
 import { Header } from "../../components";
 import { useLogin, useProduct } from "../../context";
 
@@ -217,33 +217,47 @@ export function ProductDetails(params) {
     userState.token
       ? addItemToWishList({ _id: product._id })
           .then(res => {
+            let wishlist = [];
+            if (productsState?.wishlistItems) {
+              wishlist = productsState?.wishlistItems;
+              wishlist.push(product);
+            } else {
+              wishlist.push(product);
+            }
             productsDispatch({
               type: "SET_WISHLIST_ITEMS",
-              payload: res.data.data,
+              payload: wishlist,
             });
           })
           .catch(err => {})
-      : useHistory.push("/login");
+      : history.push("/login");
   };
 
   const handleAddToCart = product => {
     userState.token
       ? addItemToCart({ _id: product._id, quantity: 1 })
           .then(res => {
+            let cart = [];
+            if (productsState?.cartItems) {
+              cart = productsState?.cartItems;
+              cart.push(product);
+            } else {
+              cart.push(product);
+            }
             productsDispatch({
               type: "SET_CART_ITEMS",
-              payload: res.data.data,
+              payload: cart,
             });
           })
           .catch(err => {})
-      : useHistory.push("/login");
+      : history.push("/login");
   };
 
   return (
     <div>
       <Header />
       <Box className={classes.container}>
-        {product && (
+        {product ? (
           <>
             {/* <Breadcrumbs item={product?.name} /> */}
             <div style={{ display: "flex", padding: "8px 18px 0px 1px" }}>
@@ -438,6 +452,8 @@ export function ProductDetails(params) {
               </div>
             </div>{" "}
           </>
+        ) : (
+          <Loader />
         )}
       </Box>
     </div>

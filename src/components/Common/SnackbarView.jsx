@@ -1,22 +1,22 @@
 import { Button, Snackbar } from "@material-ui/core";
-import React from "react";
+import React, { useState } from "react";
 import Alert from "@material-ui/lab/Alert";
 
 /*
 type:"success | warning | info | error"
 */
 export const SnackbarView = ({ message }) => {
-  console.log(message);
+  const [open, setOpen] = useState(message?.open ? message?.open : true);
   return (
     <Snackbar
       anchorOrigin={{
         vertical: "top",
         horizontal: "center",
       }}
-      open={true}
-      autoHideDuration={6000}
-      //   onClose={handleClose}
-      // message={message}
+      open={open}
+      autoHideDuration={1000}
+      onClose={() => setOpen(false)}
+      key={message}
     >
       <Alert
         variant="filled"

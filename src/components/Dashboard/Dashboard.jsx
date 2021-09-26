@@ -3,17 +3,12 @@ import { useHistory, useLocation } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
 
-import {
-  getAllProducts,
-  getFiltersList,
-  getItemsFromCart,
-  getItemsFromWishList,
-} from "../../apis/productService";
+import { getAllProducts, getFiltersList } from "../../apis/productService";
 
 import { Slider } from "../Common";
-import { ProductsList, Header, Footer } from "../../components";
+import { ProductsList, Header, Footer, ShopNow } from "../../components";
 import { MenBanner, KidsBanner, WomenBanner, BeautyBanner } from "../../images";
-import { useLogin, useProduct } from "../../context";
+import { useProduct } from "../../context";
 import { Filters } from "../Filters/Filters";
 import { Loader } from "../Common";
 import { useTheme } from "@material-ui/styles";
@@ -36,7 +31,7 @@ export function Dashboard(params) {
   const classes = useStyles();
   const history = useHistory();
   const path = useLocation();
-  const theme = useTheme();
+
   const [showSlider, setShowSlider] = useState(true);
 
   const [loading, setLoading] = useState(false);
@@ -151,29 +146,7 @@ export function Dashboard(params) {
               // }}
             />
           </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              marginBottom: "20px",
-              textTransform: "uppercase",
-              fontWeight: 600,
-              cursor: "pointer",
-            }}
-          >
-            <div
-              onClick={() => {
-                history.push("/shop/men");
-              }}
-              style={{
-                padding: "8px 12px",
-                color: "#fff",
-                backgroundColor: "#ff3e6c",
-              }}
-            >
-              Shop Now
-            </div>
-          </div>
+          <ShopNow />
         </>
       ) : (
         <>
@@ -203,13 +176,13 @@ export function Dashboard(params) {
                   <ProductsList products={products} />
                 </Grid>
               </Grid>
-              <Grid>
-                <Footer />
-              </Grid>
+              <Grid></Grid>
             </div>
           )}
         </>
       )}
+
+      <Footer />
     </div>
   );
 }

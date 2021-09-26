@@ -98,7 +98,7 @@ export function SignUp(props) {
       signup(requestParams)
         .then(res => {
           setLoading(false);
-          debugger;
+
           if (res.status === 200) {
             setMessage(prevState => ({
               ...prevState,
@@ -124,7 +124,9 @@ export function SignUp(props) {
         .catch(error => {
           setMessage(prevState => ({
             ...prevState,
-            message: "Something went wrong please try again",
+            message: error?.response?.data?.message
+              ? error?.response?.data?.message
+              : "Something went wrong please try again",
             type: "error",
             actionMsg: "OK",
             actionHandler: () => {

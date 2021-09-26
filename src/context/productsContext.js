@@ -16,8 +16,27 @@ const productsReducer = (state, action) => {
     case "SET_WISHLIST_ITEMS":
       return { ...state, wishlistItems: action?.payload };
 
+    case "REMOVE_WISHLIST_ITEMS":
+      return {
+        ...state,
+        wishlistItems: state.wishlistItems.filter(
+          wish => wish._id !== action.payload._id
+        ),
+      };
     case "SET_CART_ITEMS":
       return { ...state, cartItems: action?.payload };
+
+    case "REMOVE_CART_ITEMS":
+      return {
+        ...state,
+        cartItems: state.cartItems.filter(
+          cart => cart._id !== action.payload._id
+        ),
+      };
+
+    case "SET_ORDERS_LIST":
+      return { ...state, ordersList: action?.payload };
+
     default:
       return state;
   }
@@ -27,6 +46,7 @@ const initalState = {
   orders: [],
   cartItems: [],
   wishlistItems: [],
+  ordersList: [],
   sortBy: "",
   filters: null,
   selectedFilters: {

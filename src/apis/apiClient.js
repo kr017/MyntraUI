@@ -2,9 +2,9 @@ import axios from "axios";
 // import { useLogin } from "../context";
 
 const axiosClient = axios.create({
-  baseURL: `http://localhost:5000/`,
+  baseURL: `http://localhost:5500/`,
 
-  // baseURL: `http://13.126.22.111:5000/`,
+  // baseURL: `http://13.126.37.93:5500/`,
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",

@@ -124,11 +124,35 @@ export function Filters() {
       })
       .catch(err => {});
   };
+  const clearFilters = () => {
+    let obj = {
+      section: getCurrentSection(path),
+      categories: [],
+      brands: [],
+      colors: [],
+    };
+    getAllProducts(obj)
+      .then(function (res) {
+        productsDispatch({ type: "SET_PRODUCTS", payload: res.data.data });
+        productsDispatch({
+          type: "SET_SELECTED_FILTERS",
+          payload: obj,
+        });
+      })
+      .catch(err => {});
+  };
   return (
     <div className={classes.root}>
       <Grid className={classes.filterHeader}>
         <span className={classes.filters}>filters</span>
-        <span className={classes.clearAll}>clear all</span>
+        <span
+          className={classes.clearAll}
+          onClick={() => {
+            clearFilters();
+          }}
+        >
+          clear all
+        </span>
       </Grid>
       <Grid className={classes.filterContainer}>
         {productsState?.filters?.categories && (
@@ -155,10 +179,10 @@ export function Filters() {
             {productsState?.filters?.brands?.map((ele, id) => (
               <li className={classes.listStyle}>
                 <Checkbox
-                  // checked={isItemAdded(
-                  //   productsState?.selectedFilters?.brands,
-                  //   id
-                  // )}
+                  checked={isItemAdded(
+                    productsState?.selectedFilters?.brands,
+                    id
+                  )}
                   onChange={e => {
                     setFiletrs("brands", ele, e.currentTarget.checked);
                   }}

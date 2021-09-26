@@ -2,7 +2,8 @@ import { Grid, makeStyles } from "@material-ui/core";
 import { useHistory, useLocation } from "react-router-dom";
 import { useLogin } from "../../context";
 import { ActionButton } from "../Common";
-
+import { AddressForm } from "../../components";
+import { useState } from "react";
 const useStyles = makeStyles(theme => ({
   root: {
     display: "flex",
@@ -28,6 +29,7 @@ export const AddressTile = props => {
 
   const { userState, userDispatch } = useLogin();
 
+  const [showAddressForm, setShowAddressForm] = useState(false);
   return (
     <div>
       {userState?.addresses?.length > 0 ? (
@@ -64,13 +66,21 @@ export const AddressTile = props => {
             <ActionButton
               kind="SIMPLE_OUTLINED"
               label="add address"
-
-              // // handleClick={() => {
-              // //   handleAddToCart(product);
-              // // }}
+              handleClick={() => {
+                setShowAddressForm(true);
+              }}
             />
           </Grid>
         </Grid>
+      )}
+
+      {/* address form */}
+      {showAddressForm && (
+        <AddressForm
+          onAddressClose={() => {
+            setShowAddressForm(false);
+          }}
+        />
       )}
     </div>
   );

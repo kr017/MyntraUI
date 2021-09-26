@@ -78,4 +78,31 @@ const calculateCartValue = cart => {
   //totalMRP  //totalDiscountOnMRP //convenienceFee //totalAmount
 };
 
-export { ratingCalculator, getCurrentSection, isItemAdded, calculateCartValue };
+/**
+ *
+ *
+ */
+
+const getFormattedDateTime = date => {
+  let d = new Date(date);
+
+  d = d.toLocaleString("en-US", {
+    weekday: "short", // long, short, narrow
+    day: "numeric", // numeric, 2-digit
+    year: "numeric", // numeric, 2-digit
+    month: "long", // numeric, 2-digit, long, short, narrow
+    hour: "numeric", // numeric, 2-digit
+    minute: "numeric", // numeric, 2-digit
+    second: "numeric", // numeric, 2-digit
+  });
+
+  return d;
+};
+
+export {
+  ratingCalculator,
+  getCurrentSection,
+  isItemAdded,
+  calculateCartValue,
+  getFormattedDateTime,
+};

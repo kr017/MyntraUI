@@ -153,6 +153,8 @@ export function Header() {
   const history = useHistory();
   const path = useLocation();
   const [anchorEl, setAnchorEl] = useState(null);
+  const [section, setSection] = useState(null);
+
   const { userState } = useLogin();
   const searchQuery = useRef();
 
@@ -184,6 +186,18 @@ export function Header() {
           payload: res.data?.data?.products,
         })
       );
+    }
+
+    if (path.pathname === "/shop/women") {
+      setSection("women");
+    } else if (path.pathname === "/shop/men") {
+      setSection("men");
+    } else if (path.pathname === "/shop/kids") {
+      setSection("kids");
+    } else if (path.pathname === "/login") {
+      setSection("login");
+    } else if (path.pathname === "/signup") {
+      setSection("signup");
     }
   };
   useEffect(
@@ -236,53 +250,51 @@ export function Header() {
             Beauty
           </Link> */}
         </Grid>
-        <Grid>
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              marginRight: "4px",
-            }}
-          >
-            <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
-              </div>
-              <InputBase
-                placeholder="Search for products, brands and more"
-                inputRef={searchQuery}
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput,
-                }}
-                inputProps={{
-                  "aria-label": "Search",
-                }}
-                onKeyPress={() => {
-                  setSearchText(searchQuery.current.value);
 
-                  getAllProducts({
-                    sections: "women", //requestParams.section,
-                    search: searchText,
-                  }).then(function (res) {
-                    productsDispatch({
-                      type: "SET_PRODUCTS",
-                      payload: res.data.data,
+        {!(section === "signup" || section === "login") && (
+          <Grid>
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                marginRight: "4px",
+              }}
+            >
+              <div className={classes.search}>
+                <div className={classes.searchIcon}>
+                  <SearchIcon />
+                </div>
+                <InputBase
+                  placeholder="Search for products, brands and more"
+                  inputRef={searchQuery}
+                  classes={{
+                    root: classes.inputRoot,
+                    input: classes.inputInput,
+                  }}
+                  inputProps={{
+                    "aria-label": "Search",
+                  }}
+                  onKeyPress={() => {
+                    setSearchText(searchQuery.current.value);
+
+                    getAllProducts({
+                      sections: section, //requestParams.section,
+                      search: searchText,
+                    }).then(function (res) {
+                      productsDispatch({
+                        type: "SET_PRODUCTS",
+                        payload: res.data.data,
+                      });
                     });
-                    //   handleSearch(e);
-                  });
-
-                  // onChange={() => {
-
-                  //   //   handleSearch(e);
-                }}
-              />
-            </div>
-          </span>
-        </Grid>
+                  }}
+                />
+              </div>
+            </span>
+          </Grid>
+        )}
 
         <Grid className={classes.userInfo}>
-          {!isLogin && (
+          {!(section === "signup" || section === "login") && (
             <div
               className={classes.profileContainer}
               onMouseEnter={handleProfileMenuOpen}

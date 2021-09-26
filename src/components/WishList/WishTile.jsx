@@ -81,18 +81,25 @@ export function WishTile(props) {
   const [message, setMessage] = useState("");
 
   const { userState } = useLogin();
-  const { productsDispatch } = useProduct();
+  const { productsState, productsDispatch } = useProduct();
 
   const handleAddToCart = product => {
     setLoading(true);
     userState.token
       ? addItemToCart({ _id: product._id, quantity: 1 })
           .then(res => {
+            let cart = [];
+            if (productsState?.cartItems) {
+              cart = productsState?.cartItems;
+              cart.push(product);
+            } else {
+              cart.push(product);
+            }
             productsDispatch({
               type: "SET_CART_ITEMS",
-              payload: res.data.data,
+              payload: cart,
             });
-            handleRemoveFromWishlist(product._id);
+            handleRemoveFromWishlist(product);
             setMessage(prevState => ({
               ...prevState,
               message: "Product moved to bag.",
@@ -108,78 +115,88 @@ export function WishTile(props) {
             }));
             setLoading(false);
           })
-      : useHistory.push("/login");
+      : history.push("/login");
   };
 
-  const handleRemoveFromWishlist = id => {
-    removeItemFromWishlist({ _id: id })
+  const handleRemoveFromWishlist = product => {
+    removeItemFromWishlist({ _id: product._id })
       .then(res => {
-        // productsDispatch({
-        //   type: "SET_WISHLIST_ITEMS",
-        //   payload: res.data?.data,
-        // });
+        productsDispatch({
+          type: "REMOVE_WISHLIST_ITEMS",
+          payload: product,
+        });
       })
       .catch(err => {
-        console.log(err);
+        setMessage(prevState => ({
+          ...prevState,
+          message: "Something went wrong please try again",
+          type: "error",
+        }));
+        setLoading(false);
       });
   };
 
-  const handleMoveToBag = id => {};
   return (
     <div className={classes.root}>
       {message && message?.type && <SnackbarView message={message} />}
       {loading && <ClipLoader color="#ffffff" loading={true} size={20} />}
-      <div className={classes.pictureContainer}>
-        <img
-          srcSet={details?.image[0]}
-          loading="lazy"
-          // "https://assets.myntassets.com/f_webp,dpr_1.5,q_60,w_210,c_limit,fl_progressive/assets/images/7546900/2019/1/24/c9be0d6e-30a4-4242-b4e0-1c166b73f2781548320874402-HERENOW-Men-Polo-Collar-T-shirt-4861548320873235-1.jpg"
-          className={classes.picture}
-          alt="product-img"
-        />
-        <div className={classes.clearContainer}>
-          <span>
-            <ClearIcon
-              htmlColor="#000"
-              onClick={() => {
-                handleRemoveFromWishlist(details._id);
-              }}
+      {details && (
+        <>
+          <div className={classes.pictureContainer}>
+            <img
+              srcSet={details?.image[0] ? details?.image[0] : null}
+              loading="lazy"
+              // "https://assets.myntassets.com/f_webp,dpr_1.5,q_60,w_210,c_limit,fl_progressive/assets/images/7546900/2019/1/24/c9be0d6e-30a4-4242-b4e0-1c166b73f2781548320874402-HERENOW-Men-Polo-Collar-T-shirt-4861548320873235-1.jpg"
+              className={classes.picture}
+              alt="product-img"
             />
-          </span>
-        </div>
-      </div>
-
-      <div>
-        {/* brand */}
-        <div className="productInfo">
-          <div className="brandName">{details.brand}</div>
-          <div className="productName">{details.name}</div>
+            <div className={classes.clearContainer}>
+              <span>
+                <ClearIcon
+                  htmlColor="#000"
+                  onClick={() => {
+                    handleRemoveFromWishlist(details);
+                  }}
+                />
+              </span>
+            </div>
+          </div>
 
           <div>
-            {/* price */}
-            <span className="discountedPrice">
-              {"Rs. "} {details.price.offerPrice}{" "}
-            </span>{" "}
-            {/* mrp */}
-            {details?.price?.MRP && (
-              <strike className="price">
-                {"Rs. "}
-                {details?.price?.MRP}
-              </strike>
-            )}
-            {/* discountLabel */}
-            {details?.price?.offerLabel && (
-              <span className="offer">({`${details?.price?.offerLabel}`})</span>
-            )}
+            {/* brand */}
+            <div className="productInfo">
+              <div className="brandName">{details.brand}</div>
+              <div className="productName">{details.name}</div>
+
+              <div>
+                {/* price */}
+                <span className="discountedPrice">
+                  {"Rs. "} {details.price.offerPrice}{" "}
+                </span>{" "}
+                {/* mrp */}
+                {details?.price?.MRP && (
+                  <strike className="price">
+                    {"Rs. "}
+                    {details?.price?.MRP}
+                  </strike>
+                )}
+                {/* discountLabel */}
+                {details?.price?.offerLabel && (
+                  <span className="offer">
+                    ({`${details?.price?.offerLabel}`})
+                  </span>
+                )}
+              </div>
+            </div>
+            <div
+              className={classes.actionArea}
+              onClick={() => handleAddToCart(details)}
+            >
+              Move to bag
+            </div>
           </div>
-        </div>
-        <div
-          className={classes.actionArea}
-          onClick={() => handleAddToCart(details)}
-        >
-          Move to bag
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 }

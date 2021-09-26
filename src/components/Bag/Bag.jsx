@@ -1,12 +1,4 @@
-import {
-  Box,
-  Grid,
-  makeStyles,
-  Radio,
-  RadioGroup,
-  Typography,
-} from "@material-ui/core";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
+import { Box, Grid, makeStyles } from "@material-ui/core";
 
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -19,10 +11,11 @@ import {
   AddressTile,
   OrderTile,
   AddressForm,
+  ShopNow,
 } from "../../components";
 import { useLogin, useProduct } from "../../context";
-import { ActionButton, DialogBox } from "../Common";
-
+import { ActionButton, DialogBox, SnackbarView } from "../Common";
+import { EmptyBag } from "../../images";
 const useStyles = makeStyles(theme => ({
   root: {
     //  marginTop: "15px"
@@ -54,6 +47,7 @@ export const Bag = () => {
   const { productsState, productsDispatch } = useProduct();
   const [open, setOpen] = useState(false);
   const [showAddressForm, setShowAddressForm] = useState(false);
+  const [message, setMessage] = useState({});
 
   const handleOpen = () => {
     setOpen(true);
@@ -63,7 +57,11 @@ export const Bag = () => {
     setOpen(false);
   };
 
-  const [value, setValue] = useState(userState?.selectedAddress?._id);
+  const [value, setValue] = useState(
+    userState?.selectedAddress?._id
+      ? userState?.selectedAddress?._id
+      : userState?.addresses?.[0]
+  );
 
   const handleChange = (address, id) => {
     setValue(id);
@@ -121,7 +119,6 @@ export const Bag = () => {
             kind="SECONDARY"
             label="add new address"
             handleClick={() => {
-              handleClose();
               setShowAddressForm(true);
               // handleAddToWishlist(product);
             }}
@@ -133,45 +130,93 @@ export const Bag = () => {
   return (
     <div className={classes.root}>
       <CartHeader />
-      <Grid container className={classes.container}>
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          md={8}
-          lg={8}
-          xl={8}
-          className={classes.first}
-        >
-          <AddressTile
-            handleChangeAddressClick={() => {
-              handleOpen();
+      {message && message?.type && <SnackbarView message={message} />}
+
+      <Grid style={{ minHeight: "70vh" }}>
+        {productsState?.cartItems?.length > 0 ? (
+          <>
+            <Grid container className={classes.container}>
+              <Grid
+                item
+                xs={12}
+                sm={12}
+                md={8}
+                lg={8}
+                xl={8}
+                className={classes.first}
+              >
+                <AddressTile
+                  handleChangeAddressClick={() => {
+                    handleOpen();
+                  }}
+                />
+
+                {productsState?.cartItems?.map((cartItem, id) => (
+                  <BagTile details={cartItem} key={id} />
+                ))}
+              </Grid>
+
+              {productsState?.cartItems?.length > 0 && (
+                <Grid
+                  item
+                  xs={12}
+                  sm={12}
+                  md={4}
+                  lg={4}
+                  xl={4}
+                  className={classes.second}
+                >
+                  <OrderTile />
+
+                  <ActionButton
+                    kind="SIMPLE_PRIMARY"
+                    label="Place Order"
+                    handleClick={() => {
+                      if (!userState?.selectedAddress?._id) {
+                        setMessage(prevState => ({
+                          ...prevState,
+                          message: "Please select address",
+                          type: "error",
+                          actionMsg: "OK",
+                          actionHandler: () => {
+                            history.push("/login");
+                          },
+                          open: true,
+                        }));
+                      } else {
+                        history.push("/checkout/address");
+                      }
+                    }}
+                  />
+                </Grid>
+              )}
+            </Grid>
+          </>
+        ) : (
+          <Grid
+            style={{
+              marginTop: "20px",
             }}
-          />
-
-          {productsState?.cartItems?.map((cartItem, id) => (
-            <BagTile details={cartItem} key={id} />
-          ))}
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          md={4}
-          lg={4}
-          xl={4}
-          className={classes.second}
-        >
-          <OrderTile />
-
-          <ActionButton
-            kind="SIMPLE_PRIMARY"
-            label="Place Order"
-            handleClick={() => history.push("/checkout/address")}
-          />
-        </Grid>
+          >
+            <div style={{ textAlign: "center" }}>
+              <div>
+                <img src={EmptyBag} />
+              </div>
+              <div
+                style={{
+                  marginBottom: "20px",
+                  fontSize: "24px",
+                  fontWeight: 600,
+                  color: "#ff3f6ccc",
+                }}
+              >
+                It feels so light...
+              </div>
+            </div>
+            <ShopNow />
+          </Grid>
+        )}
       </Grid>
-
       <Footer />
 
       {/* address list */}

@@ -3,6 +3,8 @@ import { useHistory } from "react-router-dom";
 import { Grid, makeStyles } from "@material-ui/core";
 import ClearIcon from "@material-ui/icons/Clear";
 import { removeItemFromCart } from "../../apis/productService";
+import { useState } from "react";
+import { useProduct } from "../../context";
 const useStyles = makeStyles(theme => ({
   container: {
     display: "flex",
@@ -86,9 +88,27 @@ const useStyles = makeStyles(theme => ({
 export const BagTile = props => {
   const classes = useStyles();
   const history = useHistory();
+  const [message, setMessage] = useState("");
 
+  const { productsState, productsDispatch } = useProduct();
   const { details } = props;
-
+  const handleRemoveItemFromCart = product => {
+    removeItemFromCart({ _id: details._id })
+      .then(res => {
+        productsDispatch({
+          type: "REMOVE_CART_ITEMS",
+          payload: product,
+        });
+        setMessage(prevState => ({
+          ...prevState,
+          message: "Product removed from bag.",
+          type: "success",
+        }));
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
   return (
     <div className={classes.root}>
       <Grid container className={classes.container}>
@@ -135,13 +155,7 @@ export const BagTile = props => {
               <ClearIcon
                 htmlColor="#9F9F9F"
                 onClick={() => {
-                  removeItemFromCart({ _id: details._id })
-                    .then(res => {
-                      console.log(res.data);
-                    })
-                    .catch(err => {
-                      console.log(err);
-                    });
+                  handleRemoveItemFromCart(details);
                 }}
               />
             </span>

@@ -17,13 +17,13 @@ const useStyles = makeStyles(theme => ({
 export const AddressForm = props => {
   const classes = useStyles();
   const history = useHistory();
-  const { userDispatch } = useLogin();
+  const { userState, userDispatch } = useLogin();
   const [loading, setLoading] = useState(false);
 
   const options = [
-    { label: "USA", level: 1 },
-    { label: "Canada", level: 2 },
-    { label: "Bangladesh", level: 3 },
+    { label: "CANADA", level: 1 },
+
+    { label: "INDIA", level: 2 },
   ];
   const validationSchema = yup.object({
     contactName: yup
@@ -64,6 +64,7 @@ export const AddressForm = props => {
       locality: "",
       city: "",
       state: "",
+      country: "",
     },
     validationSchema: validationSchema,
     onSubmit: values => {
@@ -82,12 +83,18 @@ export const AddressForm = props => {
       addAddress(requestParam)
         .then(res => {
           setLoading(false);
-          //   userDispatch({ type: "LOGIN", payload: res.data.data });
-          //   if (res?.data?.data?.token) {
-          //     localStorage.setItem("hint", JSON.stringify(res.data.data));
-          //   }
-          //   history.push("/");
 
+          let addresses = [];
+          if (userState?.addresses) {
+            addresses = userState?.addresses;
+            addresses.push(requestParam);
+          } else {
+            addresses.push(requestParam);
+          }
+          userDispatch({
+            type: "ADD_ADDRESS",
+            payload: addresses,
+          });
           props?.onAddressClose(); //closing dialog
         })
         .catch(error => {});
@@ -176,7 +183,7 @@ export const AddressForm = props => {
               {...formik.getFieldProps("state")}
             >
               {options.map((item, index) => (
-                <option>{item.label}</option>
+                <option key={index}>{item.label}</option>
               ))}
             </NativeSelect>
           </Box>

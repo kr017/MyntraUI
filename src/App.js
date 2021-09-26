@@ -9,6 +9,7 @@ import {
   Bag,
   Address,
   Payment,
+  Order,
 } from "./components";
 import { PrivateRoutes } from "./PrivateRoutes";
 function App() {
@@ -26,6 +27,7 @@ function App() {
         <PrivateRoutes path="/checkout/cart" component={Bag} exact />
         <PrivateRoutes path="/checkout/address" component={Address} exact />
         <PrivateRoutes path="/checkout/payment" component={Payment} exact />
+        <PrivateRoutes path="/my/orders" component={Order} exact />
       </Switch>
     </BrowserRouter>
   );

@@ -39,3 +39,7 @@ export function removeItemFromCart(data) {
 export function addPaymnet(data) {
   return axiosClient.post("/cart/api/checkout", data);
 }
+
+export function getOrders() {
+  return axiosClient.get("/cart/api/orders");
+}

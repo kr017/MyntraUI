@@ -8,7 +8,7 @@ import {
 } from "@material-ui/core";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import {
@@ -117,6 +117,12 @@ export const Address = () => {
       </div>
     );
   };
+
+  useEffect(() => {
+    if (!productsState?.cartItems || !productsState?.cartItems?.length > 0) {
+      history.push("/checkout/cart");
+    }
+  }, []);
   return (
     <div className={classes.root}>
       {message && message?.type && <SnackbarView message={message} />}
@@ -137,36 +143,39 @@ export const Address = () => {
               <AddressBigTile address={address} />
             ))}
         </Grid>
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          md={4}
-          lg={4}
-          xl={4}
-          className={classes.second}
-        >
-          <OrderTile />
-          <ActionButton
-            kind="SIMPLE_PRIMARY"
-            label="Continue"
-            handleClick={() => {
-              if (!userState?.selectedAddress?._id) {
-                setMessage(prevState => ({
-                  ...prevState,
-                  message: "Please select address",
-                  type: "error",
-                  actionMsg: "OK",
-                  actionHandler: () => {
-                    history.push("/login");
-                  },
-                }));
-              } else {
-                history.push("/checkout/payment");
-              }
-            }}
-          />
-        </Grid>
+        {productsState?.cartItems?.length > 0 && (
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={4}
+            lg={4}
+            xl={4}
+            className={classes.second}
+          >
+            <OrderTile />
+            <ActionButton
+              kind="SIMPLE_PRIMARY"
+              label="Continue"
+              handleClick={() => {
+                if (!userState?.selectedAddress?._id) {
+                  setMessage(prevState => ({
+                    ...prevState,
+                    message: "Please select address",
+                    type: "error",
+                    actionMsg: "OK",
+                    actionHandler: () => {
+                      history.push("/checkout/cart");
+                    },
+                    open: true,
+                  }));
+                } else {
+                  history.push("/checkout/payment");
+                }
+              }}
+            />
+          </Grid>
+        )}
       </Grid>
 
       <Footer />

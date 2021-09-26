@@ -58,7 +58,12 @@ export const ProfileInfoCard = () => {
           >
             wishlist
           </Link>
-          <Link className={classes.link}>orders</Link>
+          <Link
+            className={classes.link}
+            onClick={() => history.push("/my/orders")}
+          >
+            orders
+          </Link>
           <Link className={classes.link} onClick={() => handleLogOut()}>
             logout
           </Link>
