@@ -145,6 +145,9 @@ const useStyles = makeStyles(theme => ({
     alignItems: "center",
     justifyContent: "center",
     cursor: "pointer",
+    [theme.breakpoints.up("xs")]: {
+      display: "none",
+    },
   },
 }));
 

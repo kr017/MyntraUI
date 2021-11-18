@@ -64,11 +64,13 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 500,
     textAlign: "center",
     padding: "14px 0px",
+    cursor: "pointer",
   },
   clearContainer: {
     position: "absolute",
     top: "0px",
     right: "0px",
+    cursor: "pointer",
   },
 }));
 

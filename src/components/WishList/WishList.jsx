@@ -24,7 +24,7 @@ export const WishList = () => {
     <div>
       <Header />
 
-      <div style={{ paddingTop: "20px", minHeight: "70vh" }}>
+      <div style={{ minHeight: "70vh", padding: "20px" }}>
         <>
           {/* {productsState?.wishlistItems ? ( */}
           <>

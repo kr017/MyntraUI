@@ -82,6 +82,7 @@ const useStyles = makeStyles(theme => ({
   },
   clearContainer: {
     position: "relative",
+    cursor: "pointer",
   },
 }));
 

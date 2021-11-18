@@ -7,8 +7,20 @@ import { useProduct } from "../../context";
 import { Header, Footer, ShopNow, OrderDetailsTile } from "../../components";
 import { SnackbarView } from "../Common";
 import { ClipLoader } from "react-spinners";
+
+const useStyles = makeStyles(theme => ({
+  container: {
+    // minHeight: "70vh",
+    maxWidth: "70%",
+    margin: "0 auto",
+    [theme.breakpoints.up("xs")]: {
+      // display: "none",
+      maxWidth: "90%",
+    },
+  },
+}));
 export const Order = () => {
-  // const classes = useStyles();
+  const classes = useStyles();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -47,11 +59,11 @@ export const Order = () => {
       {message && message?.type && <SnackbarView message={message} />}
       {loading && <ClipLoader color="#ffffff" loading={true} size={20} />}
 
-      <div style={{ paddingTop: "20px", minHeight: "70vh" }}>
+      <div className={classes.container}>
         {productsState?.ordersList?.length > 0 ? (
-          <Grid container>
+          <Grid>
             {productsState?.ordersList?.map((order, id) => (
-              <Grid item key={id}>
+              <Grid key={id} style={{ marginBottom: "8px" }}>
                 <OrderDetailsTile details={order} />
               </Grid>
             ))}

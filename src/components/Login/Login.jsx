@@ -4,10 +4,9 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 
 import { makeStyles } from "@material-ui/core/styles";
-import { Grid } from "@material-ui/core";
+import { Button, Grid } from "@material-ui/core";
 import { InputBox, ActionButton, SnackbarView } from "../Common";
 import { useLogin } from "../../context";
-import logo from "../../images/logo.jpg";
 
 import { Header } from "../../components";
 import { login } from "../../apis/userService";
@@ -128,7 +127,19 @@ export function Login(props) {
         });
     },
   });
-
+  const submitGuest = () => {
+    login({
+      email: "k@gmail.com",
+      password: "1234",
+    }).then(res => {
+      setLoading(false);
+      userDispatch({ type: "LOGIN", payload: res.data.data });
+      history.push("/");
+      if (res?.data?.data?.token) {
+        localStorage.setItem("hint", JSON.stringify(res.data.data));
+      }
+    });
+  };
   return (
     <div className={classes.root}>
       <Header />
@@ -191,7 +202,15 @@ export function Login(props) {
                 }}
               />
             </form>
-
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <Button
+                onClick={() => {
+                  submitGuest();
+                }}
+              >
+                Guest Login
+              </Button>
+            </div>
             <div
               style={{
                 textAlign: "center",

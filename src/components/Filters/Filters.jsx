@@ -5,7 +5,11 @@ import { Grid, ListItem, makeStyles, Typography } from "@material-ui/core";
 import Checkbox from "@material-ui/core/Checkbox";
 import { useProduct } from "../../context";
 import { getAllProducts } from "../../apis/productService";
-import { getCurrentSection, isItemAdded } from "../../utils/utilities";
+import {
+  getCurrentSection,
+  isFilterSelected,
+  isItemAdded,
+} from "../../utils/utilities";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -161,6 +165,17 @@ export function Filters() {
             {productsState?.filters?.categories?.map((ele, id) => (
               <li className={classes.listStyle}>
                 <Checkbox
+                  checked={
+                    isFilterSelected(
+                      productsState?.selectedFilters?.categories,
+                      ele
+                    ) === undefined
+                      ? false
+                      : isFilterSelected(
+                          productsState?.selectedFilters?.categories,
+                          ele
+                        )
+                  }
                   inputProps={{ padding: "0px", margin: "0px" }}
                   onChange={e => {
                     setFiletrs("categories", ele, e.currentTarget.checked);
@@ -179,10 +194,17 @@ export function Filters() {
             {productsState?.filters?.brands?.map((ele, id) => (
               <li className={classes.listStyle}>
                 <Checkbox
-                  checked={isItemAdded(
-                    productsState?.selectedFilters?.brands,
-                    id
-                  )}
+                  checked={
+                    isFilterSelected(
+                      productsState?.selectedFilters?.brands,
+                      ele
+                    ) === undefined
+                      ? false
+                      : isFilterSelected(
+                          productsState?.selectedFilters?.brands,
+                          ele
+                        )
+                  }
                   onChange={e => {
                     setFiletrs("brands", ele, e.currentTarget.checked);
                   }}
@@ -200,6 +222,17 @@ export function Filters() {
               <li className={classes.listStyle}>
                 <Checkbox
                   // checked={true}
+                  checked={
+                    isFilterSelected(
+                      productsState?.selectedFilters?.colors,
+                      ele
+                    ) === undefined
+                      ? false
+                      : isFilterSelected(
+                          productsState?.selectedFilters?.colors,
+                          ele
+                        )
+                  }
                   onChange={e => {
                     setFiletrs("colors", ele, e.currentTarget.checked);
                   }}

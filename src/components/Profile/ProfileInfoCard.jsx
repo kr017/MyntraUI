@@ -29,8 +29,8 @@ export const ProfileInfoCard = () => {
   const classes = useStyles();
   const history = useHistory();
   const { userState, userDispatch } = useLogin();
-  const { productsState, productsDispatch } = useProduct();
-  console.log(userState);
+  const { productsDispatch } = useProduct();
+
   const handleLogOut = () => {
     userDispatch({ type: "LOGOUT" });
     productsDispatch({ type: "SET_WISHLIST_ITEMS", payload: null });

@@ -48,6 +48,15 @@ const isItemAdded = (list, id) => {
   }
   return false;
 };
+const isFilterSelected = (list, id) => {
+  if (list) {
+    return list.find(item => {
+      return item === id;
+    });
+  } else {
+    return false;
+  }
+};
 
 /**
  *
@@ -103,6 +112,7 @@ export {
   ratingCalculator,
   getCurrentSection,
   isItemAdded,
+  isFilterSelected,
   calculateCartValue,
   getFormattedDateTime,
 };
