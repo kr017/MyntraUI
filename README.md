@@ -1,6 +1,6 @@
 # Myntra Clone
 
-Live Project [URL](http://13.126.37.93:5500/)
+Live Project [URL](https://myntra-ui.vercel.app/)
 
 [Project Source UI](https://github.com/kr017/MyntraUI)
 
