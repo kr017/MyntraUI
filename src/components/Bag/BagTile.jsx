@@ -1,5 +1,3 @@
-import { useHistory } from "react-router-dom";
-
 import { Grid, makeStyles } from "@material-ui/core";
 import ClearIcon from "@material-ui/icons/Clear";
 import { removeItemFromCart } from "../../apis/productService";
@@ -87,11 +85,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const BagTile = props => {
-  const classes = useStyles();
-  const history = useHistory();
+  const classes = useStyles(); // eslint-disable-next-line
   const [message, setMessage] = useState("");
 
-  const { productsState, productsDispatch } = useProduct();
+  const { productsDispatch } = useProduct();
   const { details } = props;
   const handleRemoveItemFromCart = product => {
     removeItemFromCart({ _id: details._id })
@@ -113,7 +110,15 @@ export const BagTile = props => {
   return (
     <div className={classes.root}>
       <Grid container className={classes.container}>
-        <Grid item className={classes.itemContainer}>
+        <Grid
+          // xs={12}
+          // sm={12}
+          // md={4}
+          // lg={4}
+          // xl={4}
+          item
+          className={classes.itemContainer}
+        >
           <Grid item className={classes.pictureContainer}>
             <img
               srcSet={details?.image[0]}

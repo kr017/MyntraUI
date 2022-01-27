@@ -1,13 +1,10 @@
 import { useEffect } from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
-
 import { Grid } from "@material-ui/core";
-
 import { Header, Footer, WishTile, ShopNow } from "../../components";
-import { Loader } from "../Common";
-import { useProduct } from "../../context";
 import { EmptyWishlist } from "../../images";
+
+import { useProduct } from "../../context";
 
 export const WishList = () => {
   const { productsState } = useProduct();
@@ -40,7 +37,7 @@ export const WishList = () => {
               <Grid style={{ marginTop: "20px" }}>
                 <div style={{ textAlign: "center" }}>
                   <div>
-                    <img src={EmptyWishlist} />
+                    <img src={EmptyWishlist} alt="empty-wishlist" />
                   </div>
                   <div
                     style={{

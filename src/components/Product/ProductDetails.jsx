@@ -19,7 +19,7 @@ import {
 } from "../../apis/productService";
 import { isItemAdded, ratingCalculator } from "../../utils/utilities";
 
-import { ActionButton, Breadcrumbs, Loader } from "../Common";
+import { ActionButton, Loader } from "../Common";
 import { Header } from "../../components";
 import { useLogin, useProduct } from "../../context";
 
@@ -205,13 +205,12 @@ export function ProductDetails(params) {
 
   const [product, setProduct] = useState(null);
 
-  const isAddedInBag = false;
   const selectedProduct = useParams();
   useEffect(() => {
     getProductDetails(selectedProduct.id).then(res =>
       setProduct(res.data.data)
     );
-  }, []);
+  }, [selectedProduct]);
 
   const handleAddToWishlist = product => {
     userState.token

@@ -7,6 +7,7 @@ import { useProduct } from "../../context";
 import { Header, Footer, ShopNow, OrderDetailsTile } from "../../components";
 import { SnackbarView } from "../Common";
 import { ClipLoader } from "react-spinners";
+import { EmptyWishlist } from "../../images";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -51,7 +52,7 @@ export const Order = () => {
   };
 
   useEffect(() => {
-    getAllOrders();
+    getAllOrders(); // eslint-disable-next-line
   }, []);
   return (
     <div>
@@ -61,15 +62,30 @@ export const Order = () => {
 
       <div className={classes.container}>
         {productsState?.ordersList?.length > 0 ? (
-          <Grid>
+          <Grid container spacing={4}>
             {productsState?.ordersList?.map((order, id) => (
-              <Grid key={id} style={{ marginBottom: "8px" }}>
+              <Grid item key={id} xs={12} sm={6} md={6} lg={6} xl={4}>
                 <OrderDetailsTile details={order} />
               </Grid>
             ))}
           </Grid>
         ) : (
           <Grid style={{ marginTop: "20px" }}>
+            <div style={{ textAlign: "center" }}>
+              <div>
+                <img src={EmptyWishlist} alt="empty-wishlist" />
+              </div>
+              <div
+                style={{
+                  marginBottom: "20px",
+                  fontSize: "24px",
+                  fontWeight: 600,
+                  color: "#ff3f6ccc",
+                }}
+              >
+                It feels so light...
+              </div>
+            </div>
             <ShopNow />
           </Grid>
         )}

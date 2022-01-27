@@ -18,7 +18,6 @@ const useStyles = makeStyles(theme => ({
     padding: "12px 30px",
   },
   secondaryBtnFilled: {
-    border: "1px solid #d4d5d9",
     fontWeight: 600,
     padding: "12px 30px",
     color: "#fff",
@@ -61,8 +60,8 @@ export function ActionButton(props) {
         <Button
           variant="outlined"
           type={type}
-          style={style}
           className={classes.primaryBtn}
+          style={style}
           startIcon={startIcon}
           endIcon={endIcon}
           onClick={handleClick}
@@ -71,7 +70,7 @@ export function ActionButton(props) {
           {label}
         </Button>
       )}
-      {kind == "SECONDARY" && (
+      {kind === "SECONDARY" && (
         <Button
           type={type}
           style={style}
@@ -102,6 +101,7 @@ export function ActionButton(props) {
           variant="outlined"
           className={classes.simpleOutlined}
           onClick={handleClick}
+          style={style}
         >
           {label}
         </Button>
@@ -112,6 +112,7 @@ export function ActionButton(props) {
           variant="contained"
           className={classes.simplePrimary}
           onClick={handleClick}
+          style={style}
         >
           {label}
         </Button>

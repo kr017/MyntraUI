@@ -43,3 +43,10 @@ export function addPaymnet(data) {
 export function getOrders() {
   return axiosClient.get("/cart/api/orders");
 }
+
+export function addRzpOrder(data) {
+  return axiosClient.post("/cart/api/rzpOrder", data);
+}
+export function addRzpPayment(data) {
+  return axiosClient.post("/cart/api/rzpPayment", data);
+}

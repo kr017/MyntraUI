@@ -1,7 +1,5 @@
 import { Grid, makeStyles } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
 
-import { useProduct } from "../../context";
 import { getFormattedDateTime } from "../../utils/utilities";
 
 const useStyles = makeStyles(theme => ({
@@ -17,9 +15,16 @@ const useStyles = makeStyles(theme => ({
     textTransform: "capitalize",
     marginBottom: "6px",
   },
+  itemContainer: {
+    display: "flex",
+    flexDirection: "row",
+  },
   pictureContainer: {
     width: "100px",
-    height: "130px",
+    height: "100px",
+    borderRadius: "50%",
+    margin: "4px",
+    border: "1px solid lightgray",
   },
   picture: {
     position: "relative",
@@ -30,43 +35,52 @@ const useStyles = makeStyles(theme => ({
 
 export const OrderDetailsTile = props => {
   const classes = useStyles();
-  const history = useHistory();
 
   const { details } = props;
   return (
     <div className={classes.root}>
       <Grid className={classes.container}>
         {/* <div>orderid: {details?._id}</div> */}
-        <Grid>
-          <div>
-            <b>Status: </b>
-            {details?.status === "ACTIVE" ? (
-              <span>ARRIVING SOON</span>
-            ) : (
-              <span>CANCELLED</span>
-            )}
-          </div>
+        <Grid style={{ display: "flex", justifyContent: "space-between" }}>
           <div>
             <b>Ordered On: </b>
-            {getFormattedDateTime(details?.modifiedOn)}
+            <div>{getFormattedDateTime(details?.modifiedOn)}</div>
+          </div>{" "}
+          <div>
+            {details?.status === "ACTIVE" ? (
+              <span
+                style={{
+                  background: "#20BD99",
+                  padding: "2px 4px",
+                  borderRadius: "4px",
+                }}
+              >
+                ARRIVING SOON
+              </span>
+            ) : (
+              <span
+                style={{
+                  background: "#f1360b",
+                  padding: "2px 4px",
+                  borderRadius: "4px",
+                }}
+              >
+                CANCELLED
+              </span>
+            )}
           </div>
         </Grid>
         <Grid className={classes.itemContainer}>
           {details?.products?.map((product, id) => (
-            <Grid container>
-              <Grid item className={classes.pictureContainer}>
-                <img
-                  srcSet={product?.image[0]}
-                  loading="lazy"
-                  className={classes.picture}
-                  alt="product-img"
-                />
-              </Grid>
-              <Grid>
-                <div className={classes.brandName}>{product.brand}</div>
-                <div className={classes.productName}>{product.name}</div>
-              </Grid>
-            </Grid>
+            <div item className={classes.pictureContainer}>
+              <img
+                srcSet={product?.image[0]}
+                loading="lazy"
+                className={classes.picture}
+                alt="product-img"
+                style={{ borderRadius: "50%" }}
+              />
+            </div>
           ))}
         </Grid>
       </Grid>

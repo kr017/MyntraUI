@@ -1,31 +1,26 @@
-import { Grid, makeStyles } from "@material-ui/core";
 import { useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
 import { useLogin } from "../../context";
-import { ActionButton } from "../Common";
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    border: "1px solid #eaeaec",
-    borderRadius: "6px",
-    padding: "10px",
-    marginBottom: "10px",
-  },
-  address: {
-    fontSize: "14px",
-    textTransform: "capitalize",
-  },
-  name: {
-    fontWeight: 600,
-  },
-}));
+// const useStyles = makeStyles(theme => ({
+//   root: {
+//     display: "flex",
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     border: "1px solid #eaeaec",
+//     borderRadius: "6px",
+//     padding: "10px",
+//     marginBottom: "10px",
+//   },
+//   address: {
+//     fontSize: "14px",
+//     textTransform: "capitalize",
+//   },
+//   name: {
+//     fontWeight: 600,
+//   },
+// }));
 
 export const AddressBigTile = props => {
-  const classes = useStyles();
-  const history = useHistory();
   const address = props.address;
   const { userState, userDispatch } = useLogin();
   const [value, setValue] = useState(userState?.selectedAddress?._id);
@@ -39,29 +34,32 @@ export const AddressBigTile = props => {
   };
   return (
     <div>
-      <Grid container>
-        <Grid item>
-          {" "}
-          <input
-            type="radio"
-            name="address"
-            checked={address?._id === value}
-            onChange={() => handleChange(address, address._id)}
-          />
+      <div>
+        {" "}
+        <input
+          type="radio"
+          name="address"
+          checked={address?._id === value}
+          onChange={() => handleChange(address, address._id)}
+        />
+        <b style={{ textTransform: "capitalize", paddingLeft: "2px" }}>
           {address?.name}
-        </Grid>{" "}
-        <Grid item>
-          <Grid>
-            {address?.street}
-            {", "}
-          </Grid>
-          <Grid>
-            {address?.city}
-            {" - "}
-            {address?.zip}
-          </Grid>
-        </Grid>
-      </Grid>
+        </b>
+      </div>{" "}
+      <div style={{ paddingLeft: "22px", textTransform: "capitalize" }}>
+        <div>
+          {address?.locality}
+          {", "}
+          {address?.street}
+          {", "}
+        </div>
+        <div>
+          {address?.city}
+          {" - "}
+          {address?.zip}
+        </div>
+        <div>{address.state}</div>
+      </div>
     </div>
   );
 };

@@ -21,7 +21,6 @@ const useStyles = makeStyles(theme => ({
     //  marginTop: "15px"
   },
   container: {
-    padding: "0px 10px",
     width: "70%",
     margin: "0 auto",
     padding: "0px 15px",
@@ -89,29 +88,34 @@ export const Bag = () => {
         {" "}
         {userState?.addresses?.length > 0 &&
           userState.addresses.map((address, id) => (
-            <Grid container key={id}>
-              <Grid item>
+            <div>
+              <div>
                 {" "}
                 <input
                   type="radio"
                   name="address"
-                  checked={address._id === value}
+                  checked={address?._id === value}
                   onChange={() => handleChange(address, address._id)}
                 />
-                {address.name}
-              </Grid>{" "}
-              <Grid item>
-                <Grid>
+                <b style={{ textTransform: "capitalize", paddingLeft: "2px" }}>
+                  {address?.name}
+                </b>
+              </div>{" "}
+              <div style={{ paddingLeft: "22px", textTransform: "capitalize" }}>
+                <div>
+                  {address?.locality}
+                  {", "}
                   {address?.street}
                   {", "}
-                </Grid>
-                <Grid>
+                </div>
+                <div>
                   {address?.city}
                   {" - "}
                   {address?.zip}
-                </Grid>
-              </Grid>
-            </Grid>
+                </div>
+                <div>{address.state}</div>
+              </div>
+            </div>
           ))}
         <Box style={{ marginTop: "15px" }}>
           <ActionButton
@@ -150,10 +154,11 @@ export const Bag = () => {
                     handleOpen();
                   }}
                 />
-
-                {productsState?.cartItems?.map((cartItem, id) => (
-                  <BagTile details={cartItem} key={id} />
-                ))}
+                <div style={{ marginTop: "10px" }}>
+                  {productsState?.cartItems?.map((cartItem, id) => (
+                    <BagTile details={cartItem} key={id} />
+                  ))}
+                </div>
               </Grid>
 
               {productsState?.cartItems?.length > 0 && (
@@ -200,7 +205,7 @@ export const Bag = () => {
           >
             <div style={{ textAlign: "center" }}>
               <div>
-                <img src={EmptyBag} />
+                <img src={EmptyBag} alt="empty_bag" />
               </div>
               <div
                 style={{
@@ -225,7 +230,7 @@ export const Bag = () => {
         onClose={handleClose}
         header="Change Delivery Address"
         content={getAddresses()}
-        onClose={handleClose}
+
         // action
       />
 

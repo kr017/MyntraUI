@@ -85,8 +85,8 @@ export function Login(props) {
   });
   const formik = useFormik({
     initialValues: {
-      email: "k@gmail.com",
-      password: "1234",
+      email: "test@gmail.com",
+      password: "12345678",
     },
     validationSchema: validationSchema,
     onSubmit: values => {
@@ -129,8 +129,8 @@ export function Login(props) {
   });
   const submitGuest = () => {
     login({
-      email: "k@gmail.com",
-      password: "1234",
+      email: "test@gmail.com",
+      password: "12345678",
     }).then(res => {
       setLoading(false);
       userDispatch({ type: "LOGIN", payload: res.data.data });
@@ -177,6 +177,7 @@ export function Login(props) {
               <InputBox
                 fullWidth
                 id="password"
+                type="password"
                 name="password"
                 value={formik.values.password}
                 onChange={formik.handleChange}

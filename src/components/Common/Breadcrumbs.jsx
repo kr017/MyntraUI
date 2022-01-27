@@ -23,10 +23,10 @@ const useStyles = makeStyles(theme => ({
     textDecoration: "none",
   },
 }));
-const userNamesById = {
-  "612a5bbe8851e63034f5c07d": "John",
-  2: "Mike",
-};
+// const userNamesById = {
+//   "612a5bbe8851e63034f5c07d": "John",
+//   2: "Mike",
+// };
 
 const UserBreadcrumb = ({ match }) => {
   // let name = itemsArray.find(item => item.productId._id === id);

@@ -1,4 +1,4 @@
-import { Button, OutlinedInput, TextField } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles(theme => ({
   root: {
@@ -19,6 +19,7 @@ export function InputBox(props) {
   const classes = useStyles();
   const {
     id,
+    type,
     name,
     label,
     value,
@@ -39,6 +40,7 @@ export function InputBox(props) {
       }}
       className={classes.root}
       id={id}
+      type={type ? type : "text"}
       name={name}
       label={label}
       value={value}

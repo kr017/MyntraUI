@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Link, useHistory, useLocation } from "react-router-dom";
 
@@ -77,7 +77,7 @@ export const CartHeader = () => {
   const history = useHistory();
   const path = useLocation();
   const { userState, userDispatch } = useLogin();
-  const { productsState, productsDispatch } = useProduct();
+  const { productsDispatch } = useProduct();
   const [activeLink, setActiveLink] = useState("bag");
   const loadDetails = () => {
     if (path.pathname === "/checkout/cart") {

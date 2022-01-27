@@ -26,10 +26,10 @@ const userReducer = (state, action) => {
 
     case "ADD_ADDRESS":
       return {
-        return: {
-          ...state,
-          addresses: action?.payload,
-        },
+        // return: {
+        ...state,
+        addresses: action?.payload,
+        // },
       };
     default:
       return;

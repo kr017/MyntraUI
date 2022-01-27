@@ -1,15 +1,10 @@
-import { useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
-import { Grid, ListItem, makeStyles, Typography } from "@material-ui/core";
+import { Grid, makeStyles } from "@material-ui/core";
 import Checkbox from "@material-ui/core/Checkbox";
 import { useProduct } from "../../context";
 import { getAllProducts } from "../../apis/productService";
-import {
-  getCurrentSection,
-  isFilterSelected,
-  isItemAdded,
-} from "../../utils/utilities";
+import { getCurrentSection, isFilterSelected } from "../../utils/utilities";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -163,7 +158,7 @@ export function Filters() {
           <Grid className={classes.filter}>
             <span className={classes.filterLabel}>categories</span>
             {productsState?.filters?.categories?.map((ele, id) => (
-              <li className={classes.listStyle}>
+              <li className={classes.listStyle} key={id}>
                 <Checkbox
                   checked={
                     isFilterSelected(
@@ -176,11 +171,14 @@ export function Filters() {
                           ele
                         )
                   }
-                  inputProps={{ padding: "0px", margin: "0px" }}
+                  inputProps={{
+                    padding: "0px",
+                    margin: "0px",
+                    "aria-label": "primary checkbox",
+                  }}
                   onChange={e => {
                     setFiletrs("categories", ele, e.currentTarget.checked);
                   }}
-                  inputProps={{ "aria-label": "primary checkbox" }}
                 />
                 <span className={classes.element}>{ele}</span>
               </li>
@@ -192,7 +190,7 @@ export function Filters() {
           <Grid className={classes.filter}>
             <span className={classes.filterLabel}>brand</span>
             {productsState?.filters?.brands?.map((ele, id) => (
-              <li className={classes.listStyle}>
+              <li className={classes.listStyle} key={id}>
                 <Checkbox
                   checked={
                     isFilterSelected(
@@ -219,7 +217,7 @@ export function Filters() {
           <Grid className={classes.filter}>
             <span className={classes.filterLabel}>Color</span>
             {productsState?.filters?.colors?.map((ele, id) => (
-              <li className={classes.listStyle}>
+              <li className={classes.listStyle} key={id}>
                 <Checkbox
                   // checked={true}
                   checked={

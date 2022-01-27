@@ -6,6 +6,9 @@ import LoginBanner from "./login_banner.png";
 import DeliveryTruck from "./truck.png";
 import EmptyBag from "./empty.png";
 import EmptyWishlist from "./wishlist.png";
+import RazorpayLogo from "./RazorpayLogo.jpg";
+import StripeLogo from "./StripeLogo.png";
+
 export {
   KidsBanner,
   MenBanner,
@@ -15,4 +18,6 @@ export {
   DeliveryTruck,
   EmptyBag,
   EmptyWishlist,
+  RazorpayLogo,
+  StripeLogo,
 };

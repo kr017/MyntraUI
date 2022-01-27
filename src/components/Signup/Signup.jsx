@@ -1,17 +1,16 @@
-import { useHistory } from "react-router-dom";
+import { useState } from "react";
 
+import { useHistory } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { ClipLoader } from "react-spinners";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
 import { InputBox, ActionButton, SnackbarView } from "../Common";
-import { useLogin } from "../../context";
-
 import { Header } from "../../components";
-import { login, signup } from "../../apis/userService";
-import { ClipLoader } from "react-spinners";
-import { useState } from "react";
+
+import { signup } from "../../apis/userService";
 
 const useStyles = makeStyles(theme => ({
   backdrop: {
@@ -69,7 +68,6 @@ export function SignUp(props) {
   const classes = useStyles();
   const history = useHistory();
 
-  const { userDispatch } = useLogin();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -180,6 +178,7 @@ export function SignUp(props) {
               <InputBox
                 fullWidth
                 id="password"
+                type="password"
                 name="password"
                 placeholder="Password"
                 value={formik.values.password}

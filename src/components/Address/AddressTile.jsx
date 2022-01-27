@@ -1,9 +1,10 @@
+import { useState } from "react";
 import { Grid, makeStyles } from "@material-ui/core";
-import { useHistory, useLocation } from "react-router-dom";
-import { useLogin } from "../../context";
+
 import { ActionButton } from "../Common";
 import { AddressForm } from "../../components";
-import { useState } from "react";
+import { useLogin } from "../../context";
+
 const useStyles = makeStyles(theme => ({
   root: {
     display: "flex",
@@ -25,10 +26,7 @@ const useStyles = makeStyles(theme => ({
 
 export const AddressTile = props => {
   const classes = useStyles();
-  const history = useHistory();
-
-  const { userState, userDispatch } = useLogin();
-
+  const { userState } = useLogin();
   const [showAddressForm, setShowAddressForm] = useState(false);
   return (
     <div>
@@ -62,7 +60,7 @@ export const AddressTile = props => {
       ) : (
         <Grid>
           <Grid>Add address to deliver order</Grid>
-          <Grid>
+          <Grid style={{ marginTop: "5px" }}>
             <ActionButton
               kind="SIMPLE_OUTLINED"
               label="add address"

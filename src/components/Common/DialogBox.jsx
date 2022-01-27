@@ -1,13 +1,4 @@
-import {
-  Button,
-  Dialog,
-  //   DialogActions,
-  //   DialogContent,
-  DialogTitle,
-  OutlinedInput,
-  TextField,
-  Typography,
-} from "@material-ui/core";
+import { Dialog, DialogTitle } from "@material-ui/core";
 
 // import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import MuiDialogContent from "@material-ui/core/DialogContent";
@@ -16,7 +7,6 @@ import MuiDialogActions from "@material-ui/core/DialogActions";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import ClearIcon from "@material-ui/icons/Clear";
 
-import { ActionButton } from ".";
 const useStyles = makeStyles(theme => ({
   large: {
     maxWidth: "400px",
@@ -51,7 +41,7 @@ const DialogActions = withStyles(theme => ({
 
 export function DialogBox(props) {
   const classes = useStyles();
-  const { type, open, onClose, header, content, showAction, action } = props;
+  const { open, onClose, header, content, showAction, action } = props;
 
   return (
     <Dialog aria-labelledby="customized-dialog-title" open={open} maxWidth="xs">

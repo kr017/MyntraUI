@@ -11,7 +11,6 @@ import { MenBanner, KidsBanner, WomenBanner, BeautyBanner } from "../../images";
 import { useProduct } from "../../context";
 import { Filters } from "../Filters/Filters";
 import { Loader } from "../Common";
-import { useTheme } from "@material-ui/styles";
 
 const useStyles = makeStyles(theme => ({
   sliderContainer: {
@@ -64,8 +63,8 @@ export function Dashboard(params) {
     },
   ];
 
-  const [products, setProducts] = useState([]);
-  const { productsState, productsDispatch } = useProduct();
+  const [products] = useState([]);
+  const { productsDispatch } = useProduct();
 
   function loadList() {
     let requestParams = {};

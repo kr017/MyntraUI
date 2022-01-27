@@ -1,14 +1,13 @@
 import { useState } from "react";
-
-import { Field, useFormik, FormikProvider } from "formik";
+import { useHistory } from "react-router-dom";
+import { useFormik, FormikProvider } from "formik";
 import * as yup from "yup";
 
-import { DialogBox, InputBox, ActionButton } from "../Common";
+import { DialogBox, InputBox, ActionButton, SnackbarView } from "../Common";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, NativeSelect, Typography } from "@material-ui/core";
 import { addAddress } from "../../apis/userService";
 import { useLogin } from "../../context";
-import { useHistory } from "react-router-dom";
 const useStyles = makeStyles(theme => ({
   container: {
     padding: "10px",
@@ -18,8 +17,9 @@ export const AddressForm = props => {
   const classes = useStyles();
   const history = useHistory();
   const { userState, userDispatch } = useLogin();
+  // eslint-disable-next-line
   const [loading, setLoading] = useState(false);
-
+  const [message, setMessage] = useState("");
   const options = [
     { label: "CANADA", level: 1 },
 
@@ -95,6 +95,15 @@ export const AddressForm = props => {
             type: "ADD_ADDRESS",
             payload: addresses,
           });
+          setMessage(prevState => ({
+            ...prevState,
+            message: "Address Saved!",
+            type: "success",
+            actionMsg: "OK",
+            actionHandler: () => {
+              history.push("/checkout/address");
+            },
+          }));
           props?.onAddressClose(); //closing dialog
         })
         .catch(error => {});
@@ -103,6 +112,8 @@ export const AddressForm = props => {
   const getAddressForm = () => {
     return (
       <FormikProvider value={formik}>
+        {message && message?.type && <SnackbarView message={message} />}
+
         <form id="address-form" onSubmit={formik.handleSubmit}>
           <Box className={classes.container}>
             <Typography>Contact Details</Typography>
@@ -111,6 +122,7 @@ export const AddressForm = props => {
               name="contactName"
               fullWidth
               value={formik.values.contactName}
+              placeholder="Name"
               onChange={formik.handleChange}
               error={
                 formik.touched.contactName && Boolean(formik.errors.contactName)
@@ -123,6 +135,7 @@ export const AddressForm = props => {
               fullWidth
               id="contactNumber"
               name="contactNumber"
+              placeholder="Contact Number"
               value={formik.values.contactNumber}
               onChange={formik.handleChange}
               error={
@@ -140,6 +153,7 @@ export const AddressForm = props => {
             <InputBox
               id="zip"
               name="zip"
+              placeholder="Pin code"
               fullWidth
               value={formik.values.zip}
               onChange={formik.handleChange}
@@ -149,6 +163,7 @@ export const AddressForm = props => {
             <InputBox
               id="street"
               name="street"
+              placeholder="Street Name"
               fullWidth
               value={formik.values.street}
               onChange={formik.handleChange}
@@ -159,6 +174,7 @@ export const AddressForm = props => {
               fullWidth
               id="locality"
               name="locality"
+              placeholder="Locality"
               value={formik.values.locality}
               onChange={formik.handleChange}
               error={formik.touched.locality && Boolean(formik.errors.locality)}
@@ -168,6 +184,7 @@ export const AddressForm = props => {
               fullWidth
               id="city"
               name="city"
+              placeholder="City"
               value={formik.values.city}
               onChange={formik.handleChange}
               error={formik.touched.city && Boolean(formik.errors.city)}
@@ -176,6 +193,7 @@ export const AddressForm = props => {
             <NativeSelect
               id="state"
               value={formik.values.state}
+              placeholder="Country"
               onChange={formik.handleChange}
               //   input={<BootstrapInput />}
               error={formik.touched.state && Boolean(formik.errors.state)}
@@ -197,12 +215,13 @@ export const AddressForm = props => {
       <ActionButton
         type="submit"
         kind="PRIMARY"
-        label="add to bag"
+        label="Save"
         style={{ paddingLeft: "45px", paddingRight: "45px", width: "100%" }}
         // startIcon={<LocalMallIcon fontSize="small" />}
-        handleClick={() => {
-          //   handleAddToCart(product);
-        }}
+        // handleClick={() => {
+
+        //   // handleAddToCart(product);
+        // }}
         form="address-form"
       />
     );

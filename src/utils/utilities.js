@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 /**
  * 
  * @param {*} ratings 
@@ -108,6 +110,41 @@ const getFormattedDateTime = date => {
   return d;
 };
 
+const razorpayHandler = (
+  data,
+  captureHandler,
+  failureHandler,
+  dismissHandler
+) => {
+  var options = {
+    key: process.env.RZP_KEY, // process.env.REACT_APP_razorpaytest_id,
+    amount: data?.amount, // 2000 paise = INR 20, amount in paisa
+    name: data?.name,
+    order_id: data?.id,
+    prefill: {
+      name: data?.name,
+      email: data?.email,
+    },
+    theme: {
+      color: "#528ff0",
+    },
+    handler: async function (response) {
+      try {
+        captureHandler(response);
+      } catch (err) {
+        //snackbar
+      }
+    },
+  };
+
+  var rzp1 = new window.Razorpay(options);
+  rzp1.open();
+  rzp1.on("payment.failed", async response => {
+    let params = { paymentId: response.razorpay_payment_id };
+    failureHandler(params);
+  });
+};
+
 export {
   ratingCalculator,
   getCurrentSection,
@@ -115,4 +152,5 @@ export {
   isFilterSelected,
   calculateCartValue,
   getFormattedDateTime,
+  razorpayHandler,
 };

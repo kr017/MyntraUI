@@ -1,12 +1,4 @@
-import {
-  Box,
-  Grid,
-  makeStyles,
-  Radio,
-  RadioGroup,
-  Typography,
-} from "@material-ui/core";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
+import { Box, Grid, makeStyles } from "@material-ui/core";
 
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -14,7 +6,6 @@ import { useHistory } from "react-router-dom";
 import {
   CartHeader,
   Footer,
-  BagTile,
   AddressBigTile,
   OrderTile,
   AddressForm,
@@ -27,7 +18,6 @@ const useStyles = makeStyles(theme => ({
     //  marginTop: "15px"
   },
   container: {
-    padding: "0px 10px",
     width: "70%",
     margin: "0 auto",
     padding: "0px 15px",
@@ -50,13 +40,10 @@ export const Address = () => {
   const history = useHistory();
 
   const { userState, userDispatch } = useLogin();
-  const { productsState, productsDispatch } = useProduct();
+  const { productsState } = useProduct();
   const [open, setOpen] = useState(false);
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [message, setMessage] = useState({});
-  const handleOpen = () => {
-    setOpen(true);
-  };
 
   const handleClose = () => {
     setOpen(false);
@@ -75,32 +62,29 @@ export const Address = () => {
   const getAddresses = () => {
     return (
       <div>
-        {" "}
         {userState?.addresses?.length > 0 &&
           userState.addresses.map((address, id) => (
-            <Grid container key={id}>
-              <Grid item>
-                {" "}
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <div>
                 <input
                   type="radio"
                   name="address"
                   checked={address._id === value}
                   onChange={() => handleChange(address, address._id)}
                 />
-                {address.name}
-              </Grid>{" "}
-              <Grid item>
-                <Grid>
+                {address.name}sdfgbhn
+              </div>
+              <div>
+                <span>
                   {address?.street}
                   {", "}
-                </Grid>
-                <Grid>
+
                   {address?.city}
                   {" - "}
                   {address?.zip}
-                </Grid>
-              </Grid>
-            </Grid>
+                </span>
+              </div>
+            </div>
           ))}
         <Box style={{ marginTop: "15px" }}>
           <ActionButton
@@ -121,8 +105,8 @@ export const Address = () => {
   useEffect(() => {
     if (!productsState?.cartItems || !productsState?.cartItems?.length > 0) {
       history.push("/checkout/cart");
-    }
-  }, []);
+    } // eslint-disable-next-line
+  }, [productsState.cartItems]);
   return (
     <div className={classes.root}>
       {message && message?.type && <SnackbarView message={message} />}
@@ -140,7 +124,7 @@ export const Address = () => {
           Select delivery address
           {userState?.addresses?.length > 0 &&
             userState.addresses.map((address, id) => (
-              <AddressBigTile address={address} />
+              <AddressBigTile address={address} key={id} />
             ))}
         </Grid>
         {productsState?.cartItems?.length > 0 && (
@@ -186,7 +170,7 @@ export const Address = () => {
         onClose={handleClose}
         header="Change Delivery Address"
         content={getAddresses()}
-        onClose={handleClose}
+
         // action
       />
 
@@ -195,6 +179,7 @@ export const Address = () => {
         <AddressForm
           onAddressClose={() => {
             setShowAddressForm(false);
+            history.push("/checkout/address");
           }}
         />
       )}

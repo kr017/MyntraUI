@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useHistory, useRouteMatch, useLocation } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 
 import {
   AppBar,
@@ -100,9 +100,9 @@ const useStyles = makeStyles(theme => ({
     alignItems: "center",
     padding: "0 12px 0 17px",
     cursor: "pointer",
-    "&:hover ": {
-      borderBottom: "4px solid #ee5f73",
-    },
+    // "&:hover ": {
+    //   borderBottom: "4px solid #ee5f73",
+    // },
     height: "50px",
   },
 
@@ -172,8 +172,6 @@ export function Header() {
     setAnchorEl(null);
     // }, 500);
   };
-
-  const isLogin = useRouteMatch("/login")?.isExact;
   const loadDetails = () => {
     // get wishlist if logged in
     if (userState.token) {
@@ -200,6 +198,12 @@ export function Header() {
     } else if (path.pathname === "/login") {
       setSection("login");
     } else if (path.pathname === "/signup") {
+      setSection("signup");
+    } else if (path.pathname === "/") {
+      setSection("dash");
+    } else if (path.pathname === "/wishlist") {
+      setSection("signup");
+    } else if (path.pathname.includes("/shop")) {
       setSection("signup");
     }
   };
@@ -297,19 +301,33 @@ export function Header() {
         )}
 
         <Grid className={classes.userInfo}>
+          {console.log(section)}
           {!(section === "signup" || section === "login") && (
             <div
               className={classes.profileContainer}
               onMouseEnter={handleProfileMenuOpen}
               // onBlur={e => handleProfileMenuClose()}
               // onMouseLeave={handleProfileMenuClose}
-              onClick={handleProfileMenuOpen}
+              onClick={e => {
+                handleProfileMenuOpen(e);
+              }}
               aria-owns={open ? "mouse-over-popover" : undefined}
               aria-haspopup="true"
             >
-              <ProfileIcon htmlColor="#5d5b5b" />
+              <ProfileIcon
+                htmlColor="#5d5b5b"
+                onClick={e => {
+                  handleProfileMenuOpen(e);
+                }}
+              />
 
-              <span>profile</span>
+              <span
+                onClick={e => {
+                  handleProfileMenuOpen(e);
+                }}
+              >
+                profile
+              </span>
             </div>
           )}
           <div

@@ -1,9 +1,7 @@
 import { Grid, makeStyles } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
 
 import { useProduct } from "../../context";
 import { calculateCartValue } from "../../utils/utilities";
-import { ActionButton } from "../Common";
 
 const useStyles = makeStyles(theme => ({
   titleContainer: {
@@ -38,9 +36,8 @@ const useStyles = makeStyles(theme => ({
 
 export const OrderTile = () => {
   const classes = useStyles();
-  const history = useHistory();
 
-  const { productsState, productsDispatch } = useProduct();
+  const { productsState } = useProduct();
 
   return (
     <div className={classes.root}>

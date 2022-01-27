@@ -2,9 +2,10 @@ import axios from "axios";
 // import { useLogin } from "../context";
 
 const axiosClient = axios.create({
-  // baseURL: `http://localhost:5500/`,
+  baseURL: `https://myntra-back.herokuapp.com/`,
+  // `http://localhost:5500/`,
 
-  baseURL: `http://13.126.37.93:5500/`,
+  // baseURL: `http://13.126.37.93:5500/`,
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
@@ -14,7 +15,7 @@ axiosClient.interceptors.request.use(
   function (request) {
     let token = JSON.parse(localStorage.getItem("hint"));
     if (request.url.includes("api")) {
-      request.headers.authorization = token.token;
+      request.headers.authorization = token?.token;
     }
 
     return request;
